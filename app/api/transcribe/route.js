@@ -30,7 +30,8 @@ export async function POST(req) {
       console.log("🌐 Téléchargement de la vidéo depuis l’URL :", videoUrl)
       const tempFileName = `video-${Date.now()}.mp4`
       videoPath = path.join(os.tmpdir(), tempFileName)
-      const ytCommand = `/usr/local/bin/yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`
+      const ytCommand = `yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`
+
 
       try {
         const { stderr } = await execPromise(ytCommand)
