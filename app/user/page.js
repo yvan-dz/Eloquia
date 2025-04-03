@@ -30,7 +30,8 @@ export default function UserPage() {
       }
     })
     return () => unsubscribe()
-  }, [])
+  }, [router])
+  
 
   const handlePasswordChange = async () => {
     setMessage("")
