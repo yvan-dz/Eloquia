@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: eloquia
+    env: docker
+    plan: free
+    region: frankfurt
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: GOOGLE_SPEECH_KEY
+        sync: false
