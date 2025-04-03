@@ -28,7 +28,7 @@ export async function POST(req) {
     if (videoUrl && !file) {
       const tempFileName = `video-${Date.now()}.mp4`;
       videoPath = path.join(os.tmpdir(), tempFileName);
-      const command = `"C:\\yt-dlp\\yt-dlp.exe" -f mp4 -o "${videoPath}" "${videoUrl}"`;
+      const command = `yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`;
       const { stderr } = await execPromise(command);
       if (stderr) console.warn("yt-dlp stderr :", stderr);
     }

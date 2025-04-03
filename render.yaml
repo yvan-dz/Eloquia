@@ -7,7 +7,21 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_PROJECT_ID
+        sync: false
+      - key: GOOGLE_BUCKET_NAME
+        sync: false
       - key: RESEND_API_KEY
         sync: false
-      - key: GOOGLE_SPEECH_KEY
+
+      # 🔐 Credentials Google encodés en base64 (créés manuellement)
+      - key: GOOGLE_CREDENTIALS_BASE64
         sync: false
+
+      # 📌 Ce chemin est utilisé automatiquement par Google
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /app/google-stt.json
