@@ -1,0 +1,44 @@
+/* public/responsive.css ou styles/responsive.css */
+@media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+  
+    .navbar, .footer {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.75rem;
+    }
+  
+    .feature-grid {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .button-large {
+      width: 100%;
+      font-size: 1rem;
+    }
+  
+    h1 {
+      font-size: 2rem;
+    }
+  
+    .text-center-mobile {
+      text-align: center;
+    }
+  
+    .mobile-stack {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .max-w-3xl, .max-w-4xl {
+      max-width: 100%;
+    }
+  
+    textarea {
+      font-size: 0.9rem;
+    }
+  }
+  
