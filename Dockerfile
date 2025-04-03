@@ -15,14 +15,9 @@ RUN apt-get update && \
 # 📦 Installe les dépendances Node.js
 RUN npm install
 
-# 🔐 Recrée google-stt.json à partir de la variable d'environnement encodée
-RUN echo "$GOOGLE_CREDENTIALS_BASE64" | base64 -d > /app/google-stt.json
-
-# 🛡️ Déclare le chemin vers les credentials Google
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/google-stt.json
-
-# 🔧 Définit le mode production
+# 🛡️ Définit les variables d’environnement
 ENV NODE_ENV=production
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/google-stt.json
 
 # 🛠 Build du projet Next.js
 RUN npm run build

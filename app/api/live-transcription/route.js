@@ -23,12 +23,18 @@ function ensureGoogleCredentials() {
   ) {
     const decoded = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf-8")
     fs.writeFileSync(credentialsPath, decoded)
+    console.log("🔐 Fichier google-stt.json créé à partir de GOOGLE_CREDENTIALS_BASE64")
   }
 }
 
 export async function POST(req) {
   try {
     ensureGoogleCredentials()
+
+    if (!process.env.GOOGLE_CREDENTIALS_BASE64 || !process.env.GOOGLE_BUCKET_NAME) {
+      console.error("❌ Variables d’environnement manquantes")
+      return NextResponse.json({ error: "Clés manquantes dans les variables d'environnement" }, { status: 500 })
+    }
 
     const creds = JSON.parse(
       Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf-8")
@@ -40,17 +46,22 @@ export async function POST(req) {
 
     const body = await req.json()
 
-    // 🎙️ Transcription audio avec audioContent
+    // 🎙️ Transcription audio simple
     if (body.audioContent) {
+      console.log("🎧 Fichier audio reçu, transcription en cours...")
       const fileName = `temp-${uuidv4()}.webm`
       const filePath = path.join(tmpDir, fileName)
       const audioBuffer = Buffer.from(body.audioContent, "base64")
       fs.writeFileSync(filePath, audioBuffer)
 
+      // 📤 Upload vers Google Cloud Storage
+      console.log("📤 Upload dans le bucket :", bucketName)
       await storage.bucket(bucketName).upload(filePath, {
         destination: fileName,
       })
 
+      // 🧠 Envoi à Google STT
+      console.log("🧠 Lancement de la reconnaissance vocale avec Google...")
       const [operation] = await sttClient.longRunningRecognize({
         audio: { uri: `gs://${bucketName}/${fileName}` },
         config: {
@@ -61,6 +72,7 @@ export async function POST(req) {
       })
 
       const [response] = await operation.promise()
+      console.log("✅ Résultat reçu")
 
       const transcription = response.results
         .map((r) => r.alternatives[0]?.transcript)
@@ -68,14 +80,17 @@ export async function POST(req) {
         .join("\n")
         .trim()
 
+      // 🧹 Nettoyage
       fs.unlinkSync(filePath)
       await storage.bucket(bucketName).file(fileName).delete()
+      console.log("🧹 Fichier local et distant supprimé")
 
       return NextResponse.json({ text: transcription || "" })
     }
 
-    // ✨ Reformulation avec Gemini
+    // ✨ Gemini : reformulation
     if (body.sendToGemini && body.transcription) {
+      console.log("🧠 Gemini : reformulation demandée...")
       const prompt = `Corrige et reformule proprement ce discours en français sans changer le fond du message :\n\n${body.transcription}`
 
       const geminiRes = await fetch(
@@ -91,11 +106,14 @@ export async function POST(req) {
 
       const data = await geminiRes.json()
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Pas de réponse."
+
+      console.log("✅ Reformulation terminée")
       return NextResponse.json({ reply })
     }
 
-    // 💬 Conversation avec historique
+    // 💬 Gemini : chat avec historique
     if (body.chat && Array.isArray(body.history)) {
+      console.log("💬 Gemini : discussion avec historique...")
       const contents = body.history.map((msg) => ({
         role: msg.role,
         parts: [{ text: msg.text }],
@@ -113,13 +131,15 @@ export async function POST(req) {
       const data = await geminiChat.json()
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Pas de réponse."
 
+      console.log("✅ Réponse obtenue depuis Gemini")
       return NextResponse.json({ reply })
     }
 
+    console.warn("❓ Requête invalide ou incomplète")
     return NextResponse.json({ error: "Requête invalide" }, { status: 400 })
 
   } catch (error) {
-    console.error("Erreur serveur :", error)
+    console.error("🔥 Erreur serveur :", error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
