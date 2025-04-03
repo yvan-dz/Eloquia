@@ -5,25 +5,32 @@ FROM node:18
 WORKDIR /app
 COPY . .
 
-# 📦 Installe ffmpeg + yt-dlp + dépendances Google Speech
+# 📦 Installe ffmpeg + curl + pip + yt-dlp + dépendances Google Speech
 RUN apt-get update && \
-    apt-get install -y ffmpeg wget python3-pip && \
-    wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && \
+    apt-get install -y ffmpeg curl python3-pip && \
+    curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && \
     chmod a+rx /usr/local/bin/yt-dlp && \
+    ln -s /usr/local/bin/yt-dlp /usr/bin/yt-dlp && \
+    which yt-dlp && yt-dlp --version && \
     pip3 install google-cloud-speech
 
 # 📦 Installe les dépendances Node.js
 RUN npm install
 
-# 🛡️ Définit les variables d’environnement
+# 🛡️ Variables d’environnement (fichier STT)
 ENV NODE_ENV=production
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/google-stt.json
+
+# 🔐 Crée google-stt.json à partir de la variable base64
+RUN if [ -n "$GOOGLE_CREDENTIALS_BASE64" ]; then \
+    echo "$GOOGLE_CREDENTIALS_BASE64" | base64 -d > /app/google-stt.json; \
+    fi
 
 # 🛠 Build du projet Next.js
 RUN npm run build
 
-# 🌍 Port par défaut
+# 🌍 Port exposé
 EXPOSE 3000
 
-# 🚀 Démarrage du serveur Next.js
+# 🚀 Lancement du serveur Next.js
 CMD ["npm", "start"]

@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  eloquia-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eloquia-assistant
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/google-stt.json
+      - GOOGLE_CREDENTIALS_BASE64=${GOOGLE_CREDENTIALS_BASE64}
+    volumes:
+      - .:/app
+    restart: unless-stopped
