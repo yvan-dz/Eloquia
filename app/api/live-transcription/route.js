@@ -5,14 +5,25 @@ import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
 import fs from "fs"
 import path from "path"
+
+if (process.env.GOOGLE_CREDENTIALS_BASE64) {
+  const decoded = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf-8");
+  fs.writeFileSync("/app/google-stt.json", decoded);
+}
+
 // 📁 S’assurer que le dossier /tmp existe
 const tmpDir = path.join(process.cwd(), "tmp")
 if (!fs.existsSync(tmpDir)) {
   fs.mkdirSync(tmpDir)
 }
 
-const sttClient = new SpeechClient({ keyFilename: "./google-stt.json" })
-const storage = new Storage({ keyFilename: "./google-stt.json" })
+const creds = JSON.parse(
+  Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf-8")
+)
+
+const sttClient = new SpeechClient({ credentials: creds })
+const storage = new Storage({ credentials: creds })
+
 
 const bucketName = process.env.GOOGLE_BUCKET_NAME
 

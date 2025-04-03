@@ -7,7 +7,7 @@ import path from "path";
 
 export const runtime = "nodejs";
 const execPromise = promisify(exec);
-const SEGMENT_DURATION = 900; // 15 min en secondes
+const SEGMENT_DURATION = 900;
 
 export async function POST(req) {
   try {
@@ -17,32 +17,34 @@ export async function POST(req) {
 
     let videoPath = null;
 
-    // 🎯 Cas 1 : vidéo locale
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
       videoPath = path.join(os.tmpdir(), file.name);
       fs.writeFileSync(videoPath, buffer);
     }
 
-    // 🎯 Cas 2 : lien vidéo en ligne
     if (videoUrl && !file) {
       const tempFileName = `video-${Date.now()}.mp4`;
       videoPath = path.join(os.tmpdir(), tempFileName);
-      const command = `yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`;
-      const { stderr } = await execPromise(command);
-      if (stderr) console.warn("yt-dlp stderr :", stderr);
+      const ytCommand = `/usr/local/bin/yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`;
+
+      try {
+        const { stderr } = await execPromise(ytCommand);
+        if (stderr) console.warn("yt-dlp stderr:", stderr);
+      } catch (err) {
+        console.error("yt-dlp failed:", err);
+        return NextResponse.json({ error: "Impossible de télécharger la vidéo." }, { status: 500 });
+      }
     }
 
     if (!videoPath || !fs.existsSync(videoPath)) {
       return NextResponse.json({ error: "Vidéo introuvable" }, { status: 400 });
     }
 
-    // 🔊 Extraire audio proprement en MP3
     const extractedAudioPath = path.join(os.tmpdir(), `converted-${Date.now()}.mp3`);
     const extractCmd = `ffmpeg -i "${videoPath}" -vn -acodec libmp3lame -q:a 2 "${extractedAudioPath}"`;
     await execPromise(extractCmd);
 
-    // ✂️ Découpage audio en segments de 15 min
     const segmentPattern = path.join(os.tmpdir(), `segment-%03d.mp3`);
     const splitCmd = `ffmpeg -i "${extractedAudioPath}" -f segment -segment_time ${SEGMENT_DURATION} -c copy "${segmentPattern}"`;
     await execPromise(splitCmd);
@@ -80,13 +82,11 @@ export async function POST(req) {
       fs.unlinkSync(segmentPath);
     }
 
-    // ⏱ Obtenir la durée totale
     const ffprobeCmd = `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${extractedAudioPath}"`;
     const { stdout: durationOut } = await execPromise(ffprobeCmd);
     const durationSec = parseFloat(durationOut.trim()) || 0;
     const estimatedTime = Math.ceil(durationSec * 1.2);
 
-    // Nettoyage global
     fs.unlinkSync(videoPath);
     fs.unlinkSync(extractedAudioPath);
 
