@@ -3,7 +3,8 @@ import Link from "next/link"
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-white/20 bg-black/30 shadow-inner text-sm text-white/70">
+    <footer className="w-full border-t border-white/20 bg-[#0f0c29] text-sm text-white/70 shadow-inner">
+
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
         
         {/* © Texte gauche */}
