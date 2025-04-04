@@ -284,7 +284,7 @@ export default function LiveTranscriptionPage() {
               </div>
 
               {/* Zone de question utilisateur */}
-              <div className="flex gap-2">
+              <div className="relative w-full">
                 <Textarea
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
@@ -294,14 +294,18 @@ export default function LiveTranscriptionPage() {
                     el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
                   }}
                   placeholder="Posez une question à l'IA..."
-                  className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
+                  className="w-full pr-16 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-4 max-h-40 overflow-auto focus:outline-none"
                   style={{ transition: "height 0.2s ease" }}
                 />
-                <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
+                <Button
+                  onClick={askFollowUp}
+                  className="absolute bottom-2 right-2 bg-pink-600 hover:bg-pink-700 px-4 py-2 text-sm rounded-lg flex items-center"
+                >
                   <Send className="w-4 h-4 mr-1" />
                   Envoyer
                 </Button>
               </div>
+
 
 
               {/* Boutons d'export */}
