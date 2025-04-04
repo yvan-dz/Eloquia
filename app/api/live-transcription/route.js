@@ -19,12 +19,14 @@ export async function POST(req) {
     const bucketName = process.env.GOOGLE_BUCKET_NAME
 
     if (!credsBase64 || !bucketName) {
+      console.error("❌ Variables d’environnement manquantes")
       return NextResponse.json(
         { error: "Clés manquantes dans les variables d'environnement" },
         { status: 500 }
       )
     }
 
+    // ✅ Décodage des credentials
     const decoded = Buffer.from(credsBase64, "base64").toString("utf-8")
     const creds = JSON.parse(decoded)
 
@@ -34,39 +36,27 @@ export async function POST(req) {
     const body = await req.json()
 
     if (body.audioContent) {
-      const mimeType = body.mimeType || "audio/webm"
-      const fileExt = mimeType.split("/")[1] || "webm"
-      const encodingMap = {
-        webm: "WEBM_OPUS",
-        wav: "LINEAR16",
-        mp3: "MP3",
-        flac: "FLAC",
-        ogg: "OGG_OPUS",
-        m4a: "MP4"
-      }
-
-      const encoding = encodingMap[fileExt]
-      if (!encoding) {
-        return NextResponse.json({ error: `Format audio non supporté : ${fileExt}` }, { status: 400 })
-      }
-
-      const fileName = `temp-${uuidv4()}.${fileExt}`
+      console.log("🎧 Fichier audio reçu, transcription en cours...")
+      const fileName = `temp-${uuidv4()}.webm`
       const filePath = path.join(tmpDir, fileName)
       const audioBuffer = Buffer.from(body.audioContent, "base64")
       fs.writeFileSync(filePath, audioBuffer)
 
+      console.log("📤 Upload dans le bucket :", bucketName)
       await storage.bucket(bucketName).upload(filePath, { destination: fileName })
 
+      console.log("🧠 Lancement de la reconnaissance vocale avec Google...")
       const [operation] = await sttClient.longRunningRecognize({
         audio: { uri: `gs://${bucketName}/${fileName}` },
         config: {
-          encoding,
+          encoding: "WEBM_OPUS",
           sampleRateHertz: 48000,
           languageCode: "fr-FR",
         },
       })
 
       const [response] = await operation.promise()
+      console.log("✅ Résultat reçu")
 
       const transcription = response.results
         .map(r => r.alternatives[0]?.transcript)
@@ -76,11 +66,13 @@ export async function POST(req) {
 
       fs.unlinkSync(filePath)
       await storage.bucket(bucketName).file(fileName).delete()
+      console.log("🧹 Fichiers temporaires supprimés")
 
       return NextResponse.json({ text: transcription || "" })
     }
 
     if (body.sendToGemini && body.transcription) {
+      console.log("🧠 Gemini : reformulation demandée...")
       const prompt = `Corrige et reformule proprement ce discours en français sans changer le fond du message :\n\n${body.transcription}`
 
       const geminiRes = await fetch(
@@ -97,10 +89,12 @@ export async function POST(req) {
       const data = await geminiRes.json()
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Pas de réponse."
 
+      console.log("✅ Reformulation terminée")
       return NextResponse.json({ reply })
     }
 
     if (body.chat && Array.isArray(body.history)) {
+      console.log("💬 Gemini : discussion avec historique...")
       const contents = body.history.map(msg => ({
         role: msg.role,
         parts: [{ text: msg.text }],
@@ -118,9 +112,11 @@ export async function POST(req) {
       const data = await geminiChat.json()
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Pas de réponse."
 
+      console.log("✅ Réponse obtenue depuis Gemini")
       return NextResponse.json({ reply })
     }
 
+    console.warn("❓ Requête invalide ou incomplète")
     return NextResponse.json({ error: "Requête invalide" }, { status: 400 })
 
   } catch (error) {
