@@ -33,55 +33,69 @@ export default function LiveTranscriptionPage() {
       clearTimeout(recordingTimeout.current)
       mediaRecorderRef.current?.stop()
     } else {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      streamRef.current = stream
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" })
-      mediaRecorderRef.current = mediaRecorder
-      audioChunksRef.current = []
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data)
-      }
-
-      mediaRecorder.onstop = async () => {
-        setTranscribing(true)
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" })
-        const arrayBuffer = await audioBlob.arrayBuffer()
-        const base64Audio = btoa(
-          new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
-        )
-
-        try {
-          const res = await fetch("/api/live-transcription", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ audioContent: base64Audio }),
-          })
-
-          const data = await res.json()
-          if (data?.text) {
-            setPartCount((prev) => prev + 1)
-            setTranscription((prev) =>
-              prev + `\n\n🧩 Partie ${partCount + 1} :\n${data.text}`
-            )
-          }
-        } catch (err) {
-          console.error("Erreur de transcription :", err)
-        } finally {
-          setTranscribing(false)
-          streamRef.current?.getTracks().forEach((track) => track.stop())
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        streamRef.current = stream
+  
+        // 🎯 Détection dynamique pour Safari
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+        const options = isSafari ? {} : { mimeType: "audio/webm" }
+  
+        const mediaRecorder = new MediaRecorder(stream, options)
+        mediaRecorderRef.current = mediaRecorder
+        audioChunksRef.current = []
+  
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunksRef.current.push(e.data)
         }
+  
+        mediaRecorder.onstop = async () => {
+          setTranscribing(true)
+          const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || "audio/webm" })
+          const arrayBuffer = await audioBlob.arrayBuffer()
+          const base64Audio = btoa(
+            new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
+          )
+  
+          try {
+            const res = await fetch("/api/live-transcription", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                audioContent: base64Audio,
+                mimeType: audioBlob.type, // 🔥 nouvel argument
+              }),
+            })
+  
+            const data = await res.json()
+            if (data?.text) {
+              setPartCount((prev) => prev + 1)
+              setTranscription((prev) =>
+                prev + `\n\n🧩 Partie ${partCount + 1} :\n${data.text}`
+              )
+            }
+          } catch (err) {
+            console.error("Erreur de transcription :", err)
+          } finally {
+            setTranscribing(false)
+            streamRef.current?.getTracks().forEach((track) => track.stop())
+          }
+        }
+  
+        setIsRecording(true)
+        mediaRecorder.start()
+  
+        recordingTimeout.current = setTimeout(() => {
+          setIsRecording(false)
+          mediaRecorder.stop()
+        }, 59000)
+      } catch (err) {
+        console.error("Erreur lors de l'enregistrement audio :", err)
+        alert("Erreur d'enregistrement audio : ce navigateur ne prend peut-être pas en charge ce format.")
       }
-
-      setIsRecording(true)
-      mediaRecorder.start()
-
-      recordingTimeout.current = setTimeout(() => {
-        setIsRecording(false)
-        mediaRecorder.stop()
-      }, 59000)
     }
   }
+  
 
   const sendToGemini = async () => {
     if (!transcription.trim()) return
@@ -97,7 +111,7 @@ export default function LiveTranscriptionPage() {
     const reply = data.reply || "Pas de réponse."
 
     setAiReply(reply)
-    setChatMessages([{ role: "assistant", text: reply }]) // 🧼 Réinit chat
+    setChatMessages([{ role: "assistant", text: reply }])
     setChatInput("")
     setChatLoading(false)
   }
@@ -106,10 +120,7 @@ export default function LiveTranscriptionPage() {
     if (!chatInput.trim()) return
     setChatLoading(true)
 
-    const updatedChat = [
-      ...chatMessages,
-      { role: "user", text: chatInput },
-    ]
+    const updatedChat = [...chatMessages, { role: "user", text: chatInput }]
 
     const res = await fetch("/api/live-transcription", {
       method: "POST",
@@ -130,8 +141,7 @@ export default function LiveTranscriptionPage() {
 
   const exportTxt = (text, filename, isAI = false) => {
     const date = new Date().toLocaleString()
-    let content = `📄 ${isAI ? "TEXTE CORRIGÉ PAR L'IA" : "TRANSCRIPTION AUDIO"} - ${date}\n\n`
-    content += text.trim() + "\n\n🔚 Fin du document"
+    const content = `📄 ${isAI ? "TEXTE CORRIGÉ PAR L'IA" : "TRANSCRIPTION AUDIO"} - ${date}\n\n${text.trim()}\n\n🔚 Fin du document`
     const blob = new Blob([content], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -173,13 +183,10 @@ export default function LiveTranscriptionPage() {
   const exportTxtChat = (messages) => {
     const date = new Date().toLocaleString()
     let content = `💬 Historique de conversation avec l’IA - ${date}\n\n`
-  
-    messages.forEach((msg, i) => {
+    messages.forEach((msg) => {
       content += `${msg.role === "user" ? "👤 Vous" : "🤖 IA"} : ${msg.text.trim()}\n\n`
     })
-  
     content += "────────────────────────────────────────────\n🔚 Fin du chat"
-  
     const blob = new Blob([content], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -188,19 +195,19 @@ export default function LiveTranscriptionPage() {
     a.click()
     URL.revokeObjectURL(url)
   }
-  
+
   const exportPdfChat = (messages) => {
     const doc = new jsPDF()
     const margin = 10
     const maxWidth = 180
     const date = new Date().toLocaleString()
-  
+
     doc.setFont("Helvetica", "bold")
     doc.setFontSize(14)
     doc.text("🧠 Historique de conversation IA", margin, 20)
     doc.setFontSize(10)
     doc.text(`Date : ${date}`, margin, 28)
-  
+
     doc.setFont("Helvetica", "normal")
     let y = 36
     messages.forEach((msg) => {
@@ -215,14 +222,14 @@ export default function LiveTranscriptionPage() {
       })
       y += 6
     })
-  
+
     y += 10
     doc.setFont("Helvetica", "italic")
     doc.text("Fin du chat", margin, y)
-  
     doc.save("chat_ia.pdf")
   }
-  
+
+
 
   return (
     <ProtectedRoute>
@@ -270,8 +277,8 @@ export default function LiveTranscriptionPage() {
                   <div
                     key={i}
                     className={`max-w-[80%] px-4 py-3 rounded-xl text-sm shadow-sm ${msg.role === "user"
-                        ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
-                        : "bg-purple-500/20 text-pink-200"
+                      ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
+                      : "bg-purple-500/20 text-pink-200"
                       }`}
                   >
                     <p className="font-semibold mb-1">
@@ -285,23 +292,23 @@ export default function LiveTranscriptionPage() {
 
               {/* Zone de question utilisateur */}
               <div className="flex gap-2">
-  <Textarea
-    value={chatInput}
-    onChange={(e) => setChatInput(e.target.value)}
-    onInput={(e) => {
-      const el = e.target
-      el.style.height = "auto" // reset
-      el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
-    }}
-    placeholder="Posez une question à l'IA..."
-    className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
-    style={{ transition: "height 0.2s ease" }}
-  />
-  <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
-    <Send className="w-4 h-4 mr-1" />
-    Envoyer
-  </Button>
-</div>
+                <Textarea
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onInput={(e) => {
+                    const el = e.target
+                    el.style.height = "auto" // reset
+                    el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
+                  }}
+                  placeholder="Posez une question à l'IA..."
+                  className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
+                  style={{ transition: "height 0.2s ease" }}
+                />
+                <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
+                  <Send className="w-4 h-4 mr-1" />
+                  Envoyer
+                </Button>
+              </div>
 
 
               {/* Boutons d'export */}
