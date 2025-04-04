@@ -9,6 +9,9 @@ export default function Footer() {
           © {new Date().getFullYear()} <span className="font-semibold text-white">Eloquia</span>. Tous droits réservés.
         </p>
         <div className="flex flex-wrap justify-center sm:justify-end gap-4">
+          <Link href="/about" className="hover:text-white transition duration-200">
+            À propos
+          </Link>
           <Link href="/mentions-legales" className="hover:text-white transition duration-200">
             Mentions légales
           </Link>
