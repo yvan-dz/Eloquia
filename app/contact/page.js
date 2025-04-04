@@ -65,8 +65,8 @@ export default function ContactPage() {
 
         {/* ✉️ Formulaire */}
         <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10 space-y-6 shadow-2xl transition-all">
-          <FormInput icon={<User />} type="text" name="name" value={form.name} onChange={handleChange} placeholder="Jean Dupont" label="Votre nom" />
-          <FormInput icon={<Mail />} type="email" name="email" value={form.email} onChange={handleChange} placeholder="jean@email.com" label="Adresse e-mail" />
+          <FormInput icon={<User />} type="text" name="name" value={form.name} onChange={handleChange} placeholder="Reiner Braun" label="Votre nom" />
+          <FormInput icon={<Mail />} type="email" name="email" value={form.email} onChange={handleChange} placeholder="reiner@email.com" label="Adresse e-mail" />
           <div className="space-y-2">
             <label className="text-sm font-medium text-white/80">Votre message</label>
             <div className="flex items-start bg-white/10 border border-white/20 rounded-lg px-3 py-2">

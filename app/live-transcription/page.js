@@ -285,17 +285,24 @@ export default function LiveTranscriptionPage() {
 
               {/* Zone de question utilisateur */}
               <div className="flex gap-2">
-                <Textarea
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Posez une question à l'IA..."
-                  className="flex-1 bg-slate-800/60 border border-white/10 text-white rounded-xl p-3"
-                />
-                <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
-                  <Send className="w-4 h-4 mr-1" />
-                  Envoyer
-                </Button>
-              </div>
+  <Textarea
+    value={chatInput}
+    onChange={(e) => setChatInput(e.target.value)}
+    onInput={(e) => {
+      const el = e.target
+      el.style.height = "auto" // reset
+      el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
+    }}
+    placeholder="Posez une question à l'IA..."
+    className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
+    style={{ transition: "height 0.2s ease" }}
+  />
+  <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
+    <Send className="w-4 h-4 mr-1" />
+    Envoyer
+  </Button>
+</div>
+
 
               {/* Boutons d'export */}
               <div className="flex justify-end gap-2">

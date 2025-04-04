@@ -12,48 +12,65 @@ export default function ConfidentialitePage() {
             🔒 Politique de Confidentialité
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto">
-            Transparence, respect et sécurité. Découvrez comment nous protégeons votre vie privée.
+            Transparence, respect et sécurité. Voici comment vos données sont protégées sur notre plateforme.
           </p>
         </div>
 
         {/* Principes clés */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {/* Aucun suivi */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:scale-[1.02] transition">
             <ShieldCheck className="text-pink-400 w-7 h-7 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Zéro collecte abusive</h3>
+            <h3 className="text-lg font-semibold mb-2">Zéro collecte invisible</h3>
             <p className="text-white/70 text-sm">
-              Aucune donnée personnelle n’est collectée sans votre accord explicite. Le respect de votre vie privée est une priorité.
+              Aucune donnée personnelle n’est collectée à votre insu. Nous ne stockons ni nom, ni adresse, ni historique utilisateur.
             </p>
           </div>
 
+          {/* Pas de base de données */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:scale-[1.02] transition">
             <FileLock className="text-purple-400 w-7 h-7 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucune conservation</h3>
+            <h3 className="text-lg font-semibold mb-2">Traitement temporaire</h3>
             <p className="text-white/70 text-sm">
-              Les fichiers sont traités en mémoire vive et immédiatement supprimés après la transcription. Aucune trace, aucun stockage.
+              Vos fichiers sont traités directement en mémoire vive. Ils ne sont jamais stockés sur nos serveurs, ni transférés à des tiers.
             </p>
           </div>
 
+          {/* Suppression automatique */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:scale-[1.02] transition">
             <Trash2 className="text-yellow-400 w-7 h-7 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Suppression instantanée</h3>
+            <h3 className="text-lg font-semibold mb-2">Suppression immédiate</h3>
             <p className="text-white/70 text-sm">
-              Toutes vos vidéos et audios sont effacés automatiquement après usage. Vous restez maître de votre contenu.
+              Dès que la transcription ou la réponse IA est terminée, les fichiers sont supprimés automatiquement. Aucun enregistrement, aucune sauvegarde.
             </p>
           </div>
 
+          {/* Publicité & tracking */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:scale-[1.02] transition">
             <EyeOff className="text-teal-400 w-7 h-7 mb-4" />
             <h3 className="text-lg font-semibold mb-2">Aucune publicité</h3>
             <p className="text-white/70 text-sm">
-              Vos données ne seront jamais utilisées à des fins marketing ou vendues à des tiers. Zéro publicité. Zéro tracking.
+              Nous ne diffusons aucune publicité, ne partageons aucune donnée, et n’effectuons aucun suivi marketing. Votre navigation est libre, anonyme et respectée.
             </p>
           </div>
         </div>
 
-        {/* Conclusion */}
-        <div className="text-center pt-8 text-white/60 text-sm">
-          Cette politique de confidentialité peut évoluer. Nous vous tiendrons informé de tout changement majeur.
+        {/* Vos droits */}
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 mt-8 shadow-lg">
+          <h3 className="text-lg font-semibold mb-2 text-white">Vos droits & votre contrôle</h3>
+          <p className="text-white/70 text-sm leading-relaxed">
+            Vous gardez le plein contrôle sur les contenus que vous traitez via notre plateforme. Aucune information saisie, transmise ou générée n’est conservée ou utilisée à d’autres fins que votre usage immédiat. Si vous avez une question ou souhaitez une suppression manuelle exceptionnelle, vous pouvez nous contacter à tout moment.
+          </p>
+        </div>
+
+        {/* Mise à jour */}
+        <div className="text-center pt-10 text-white/60 text-sm">
+          Politique mise à jour le{" "}
+          {new Date().toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
         </div>
       </div>
     </div>
