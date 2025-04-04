@@ -173,13 +173,13 @@ export default function LiveTranscriptionPage() {
   const exportTxtChat = (messages) => {
     const date = new Date().toLocaleString()
     let content = `💬 Historique de conversation avec l’IA - ${date}\n\n`
-  
+
     messages.forEach((msg, i) => {
       content += `${msg.role === "user" ? "👤 Vous" : "🤖 IA"} : ${msg.text.trim()}\n\n`
     })
-  
+
     content += "────────────────────────────────────────────\n🔚 Fin du chat"
-  
+
     const blob = new Blob([content], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -188,19 +188,19 @@ export default function LiveTranscriptionPage() {
     a.click()
     URL.revokeObjectURL(url)
   }
-  
+
   const exportPdfChat = (messages) => {
     const doc = new jsPDF()
     const margin = 10
     const maxWidth = 180
     const date = new Date().toLocaleString()
-  
+
     doc.setFont("Helvetica", "bold")
     doc.setFontSize(14)
     doc.text("🧠 Historique de conversation IA", margin, 20)
     doc.setFontSize(10)
     doc.text(`Date : ${date}`, margin, 28)
-  
+
     doc.setFont("Helvetica", "normal")
     let y = 36
     messages.forEach((msg) => {
@@ -215,14 +215,14 @@ export default function LiveTranscriptionPage() {
       })
       y += 6
     })
-  
+
     y += 10
     doc.setFont("Helvetica", "italic")
     doc.text("Fin du chat", margin, y)
-  
+
     doc.save("chat_ia.pdf")
   }
-  
+
 
   return (
     <ProtectedRoute>
@@ -270,8 +270,8 @@ export default function LiveTranscriptionPage() {
                   <div
                     key={i}
                     className={`max-w-[80%] px-4 py-3 rounded-xl text-sm shadow-sm ${msg.role === "user"
-                        ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
-                        : "bg-purple-500/20 text-pink-200"
+                      ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
+                      : "bg-purple-500/20 text-pink-200"
                       }`}
                   >
                     <p className="font-semibold mb-1">
@@ -285,23 +285,23 @@ export default function LiveTranscriptionPage() {
 
               {/* Zone de question utilisateur */}
               <div className="flex gap-2">
-  <Textarea
-    value={chatInput}
-    onChange={(e) => setChatInput(e.target.value)}
-    onInput={(e) => {
-      const el = e.target
-      el.style.height = "auto" // reset
-      el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
-    }}
-    placeholder="Posez une question à l'IA..."
-    className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
-    style={{ transition: "height 0.2s ease" }}
-  />
-  <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
-    <Send className="w-4 h-4 mr-1" />
-    Envoyer
-  </Button>
-</div>
+                <Textarea
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onInput={(e) => {
+                    const el = e.target
+                    el.style.height = "auto" // reset
+                    el.style.height = `${Math.min(el.scrollHeight, 160)}px` // limite
+                  }}
+                  placeholder="Posez une question à l'IA..."
+                  className="flex-1 resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
+                  style={{ transition: "height 0.2s ease" }}
+                />
+                <Button onClick={askFollowUp} className="bg-pink-600 hover:bg-pink-700">
+                  <Send className="w-4 h-4 mr-1" />
+                  Envoyer
+                </Button>
+              </div>
 
 
               {/* Boutons d'export */}
