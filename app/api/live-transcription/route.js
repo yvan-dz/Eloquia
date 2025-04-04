@@ -13,27 +13,12 @@ if (!fs.existsSync(tmpDir)) {
   fs.mkdirSync(tmpDir)
 }
 
-// ✅ Crée le fichier credentials à partir de GOOGLE_APPLICATION_CREDENTIALS_JSON
-function ensureGoogleCredentials() {
-  const credentialsPath = "/app/google-stt.json"
-  if (
-    process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON &&
-    !fs.existsSync(credentialsPath)
-  ) {
-    const json = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON.replace(/\\"/g, '"')
-    fs.writeFileSync(credentialsPath, json)
-    console.log("🔐 Fichier google-stt.json créé à partir de GOOGLE_APPLICATION_CREDENTIALS_JSON")
-  }
-}
-
 export async function POST(req) {
   try {
-    ensureGoogleCredentials()
+    const credsRaw = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON
+    const bucketName = process.env.GOOGLE_BUCKET_NAME
 
-    if (
-      !process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON ||
-      !process.env.GOOGLE_BUCKET_NAME
-    ) {
+    if (!credsRaw || !bucketName) {
       console.error("❌ Variables d’environnement manquantes")
       return NextResponse.json(
         { error: "Clés manquantes dans les variables d'environnement" },
@@ -41,16 +26,13 @@ export async function POST(req) {
       )
     }
 
-    const creds = JSON.parse(
-      process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON.replace(/\\"/g, '"')
-    )
-
+    const creds = JSON.parse(credsRaw)
     const sttClient = new SpeechClient({ credentials: creds })
     const storage = new Storage({ credentials: creds })
-    const bucketName = process.env.GOOGLE_BUCKET_NAME
 
     const body = await req.json()
 
+    // 🎙️ Transcription audio
     if (body.audioContent) {
       console.log("🎧 Fichier audio reçu, transcription en cours...")
       const fileName = `temp-${uuidv4()}.webm`
@@ -59,9 +41,7 @@ export async function POST(req) {
       fs.writeFileSync(filePath, audioBuffer)
 
       console.log("📤 Upload dans le bucket :", bucketName)
-      await storage.bucket(bucketName).upload(filePath, {
-        destination: fileName,
-      })
+      await storage.bucket(bucketName).upload(filePath, { destination: fileName })
 
       console.log("🧠 Lancement de la reconnaissance vocale avec Google...")
       const [operation] = await sttClient.longRunningRecognize({
@@ -77,18 +57,19 @@ export async function POST(req) {
       console.log("✅ Résultat reçu")
 
       const transcription = response.results
-        .map((r) => r.alternatives[0]?.transcript)
+        .map(r => r.alternatives[0]?.transcript)
         .filter(Boolean)
         .join("\n")
         .trim()
 
       fs.unlinkSync(filePath)
       await storage.bucket(bucketName).file(fileName).delete()
-      console.log("🧹 Fichier local et distant supprimé")
+      console.log("🧹 Fichiers temporaires supprimés")
 
       return NextResponse.json({ text: transcription || "" })
     }
 
+    // ✨ Gemini : reformulation
     if (body.sendToGemini && body.transcription) {
       console.log("🧠 Gemini : reformulation demandée...")
       const prompt = `Corrige et reformule proprement ce discours en français sans changer le fond du message :\n\n${body.transcription}`
@@ -111,9 +92,10 @@ export async function POST(req) {
       return NextResponse.json({ reply })
     }
 
+    // 💬 Gemini : chat avec historique
     if (body.chat && Array.isArray(body.history)) {
       console.log("💬 Gemini : discussion avec historique...")
-      const contents = body.history.map((msg) => ({
+      const contents = body.history.map(msg => ({
         role: msg.role,
         parts: [{ text: msg.text }],
       }))
