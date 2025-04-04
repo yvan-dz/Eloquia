@@ -25,7 +25,7 @@ export async function POST(req) {
       fs.writeFileSync(videoPath, buffer)
     }
 
-    // 🌐 Cas 2 : URL vidéo en ligne (traité via yt-dlp-service)
+    // 🌐 Cas 2 : URL vidéo en ligne (via yt-dlp-service)
     if (videoUrl && !file) {
       console.log("🌐 Téléchargement de la vidéo via yt-dlp-service :", videoUrl)
       const tempFileName = `video-${Date.now()}.mp4`
@@ -38,7 +38,17 @@ export async function POST(req) {
           body: JSON.stringify({ url: videoUrl }),
         })
 
-        const json = await res.json()
+        let json
+        try {
+          json = await res.json()
+        } catch (jsonError) {
+          const raw = await res.text()
+          console.error("❌ Réponse non-JSON reçue :", raw)
+          return NextResponse.json(
+            { error: "Réponse invalide de l’API yt-dlp-service" },
+            { status: 500 }
+          )
+        }
 
         if (!res.ok) {
           throw new Error(json.error || "Erreur lors du téléchargement distant")
@@ -52,7 +62,10 @@ export async function POST(req) {
 
       } catch (err) {
         console.error("❌ Échec via yt-dlp-service :", err)
-        return NextResponse.json({ error: "Impossible de télécharger la vidéo via l’API." }, { status: 500 })
+        return NextResponse.json(
+          { error: "Impossible de télécharger la vidéo via l’API." },
+          { status: 500 }
+        )
       }
     }
 
