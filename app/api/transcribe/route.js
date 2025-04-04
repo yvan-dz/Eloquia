@@ -7,7 +7,7 @@ import path from "path"
 
 export const runtime = "nodejs"
 const execPromise = promisify(exec)
-const SEGMENT_DURATION = 900
+const SEGMENT_DURATION = 900 // 15 minutes
 
 export async function POST(req) {
   try {
@@ -17,17 +17,17 @@ export async function POST(req) {
 
     let videoPath = null
 
-    // 🎬 Cas 1 : Fichier local
+    // 🎬 Cas 1 : Vidéo locale
     if (file) {
+      console.log("📁 Vidéo locale détectée")
       const buffer = Buffer.from(await file.arrayBuffer())
       videoPath = path.join(os.tmpdir(), file.name)
       fs.writeFileSync(videoPath, buffer)
     }
 
-    // 🌐 Cas 2 : Vidéo en ligne → yt-dlp-service (stream binaire)
+    // 🌐 Cas 2 : Vidéo en ligne (via yt-dlp-service avec base64)
     if (videoUrl && !file) {
       console.log("🌐 Téléchargement de la vidéo via yt-dlp-service :", videoUrl)
-
       const tempFileName = `video-${Date.now()}.mp4`
       videoPath = path.join(os.tmpdir(), tempFileName)
 
@@ -42,17 +42,18 @@ export async function POST(req) {
         throw new Error(`Erreur API yt-dlp-service: ${errText}`)
       }
 
-      const fileStream = fs.createWriteStream(videoPath)
-      await new Promise((resolve, reject) => {
-        res.body.pipe(fileStream)
-        res.body.on("error", reject)
-        fileStream.on("finish", resolve)
-      })
+      const data = await res.json()
 
-      console.log("✅ Vidéo téléchargée via flux :", videoPath)
+      if (!data.base64) {
+        throw new Error("Réponse invalide de l'API : base64 manquant")
+      }
+
+      const buffer = Buffer.from(data.base64, "base64")
+      fs.writeFileSync(videoPath, buffer)
+      console.log("✅ Vidéo téléchargée avec succès :", videoPath)
     }
 
-    // ❌ Vérification
+    // ✅ Vérification
     if (!videoPath || !fs.existsSync(videoPath)) {
       return NextResponse.json({ error: "Vidéo introuvable" }, { status: 400 })
     }
@@ -62,13 +63,16 @@ export async function POST(req) {
     const extractCmd = `ffmpeg -i "${videoPath}" -vn -acodec libmp3lame -q:a 2 "${extractedAudioPath}"`
     await execPromise(extractCmd)
 
-    // ✂️ Découpage
+    // ✂️ Découpage audio
     const segmentPattern = path.join(os.tmpdir(), `segment-%03d.mp3`)
     const splitCmd = `ffmpeg -i "${extractedAudioPath}" -f segment -segment_time ${SEGMENT_DURATION} -c copy "${segmentPattern}"`
     await execPromise(splitCmd)
 
     // 📜 Transcription
-    const segments = fs.readdirSync(os.tmpdir()).filter(f => f.startsWith("segment-") && f.endsWith(".mp3")).sort()
+    const segments = fs.readdirSync(os.tmpdir())
+      .filter(f => f.startsWith("segment-") && f.endsWith(".mp3"))
+      .sort()
+
     let fullTranscription = ""
 
     for (const fileName of segments) {
@@ -101,12 +105,13 @@ export async function POST(req) {
       fs.unlinkSync(segmentPath)
     }
 
-    // ⏱ Estimation
+    // ⏱ Durée estimée
     const ffprobeCmd = `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${extractedAudioPath}"`
     const { stdout: durationOut } = await execPromise(ffprobeCmd)
     const durationSec = parseFloat(durationOut.trim()) || 0
     const estimatedTime = Math.ceil(durationSec * 1.2)
 
+    // 🧹 Nettoyage
     fs.unlinkSync(videoPath)
     fs.unlinkSync(extractedAudioPath)
 
