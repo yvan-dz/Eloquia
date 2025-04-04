@@ -64,9 +64,8 @@ export default function PricingPage() {
           {plans.map((plan, idx) => (
             <div
               key={idx}
-              className={`rounded-3xl p-8 border backdrop-blur-md transition hover:scale-[1.02] space-y-6 ${
-                plan.highlight ? "bg-white/10 border-pink-400/20 shadow-2xl" : "bg-white/5 border-white/10"
-              }`}
+              className={`rounded-3xl p-8 border backdrop-blur-md transition hover:scale-[1.02] space-y-6 ${plan.highlight ? "bg-white/10 border-pink-400/20 shadow-2xl" : "bg-white/5 border-white/10"
+                }`}
             >
               <h3 className="text-2xl font-bold">{plan.title}</h3>
               <p className="text-3xl font-extrabold">{plan.price}</p>
@@ -90,9 +89,15 @@ export default function PricingPage() {
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 text-transparent bg-clip-text">
               🏢 Offre Entreprise & Équipe
             </h2>
+
             <p className="text-white/70 max-w-2xl mx-auto text-lg">
               Vous êtes une école, un média ou une grande structure ? Profitez d’un accès personnalisé, de quotas sur mesure et d’un accompagnement premium.
             </p>
+
+            <p className="text-white/70 max-w-2xl mx-auto text-sm italic">
+              🔐 Pour les entreprises et organisations soumises à des exigences strictes en matière de <strong>confidentialité, sécurité ou performance</strong>, nous proposons une version entièrement <strong>locale</strong> du service. Aucune donnée ne transite par nos serveurs : tout est traité sur votre propre infrastructure, garantissant un niveau de confidentialité maximal.
+            </p>
+
             <div className="flex justify-center items-center gap-4 text-sm font-medium text-white/90">
               <Users className="w-5 h-5 text-yellow-400" />
               <span>Multi-utilisateurs</span>
@@ -101,6 +106,7 @@ export default function PricingPage() {
               <Sparkles className="w-5 h-5 text-purple-400" />
               <span>Support dédié 7j/7</span>
             </div>
+
             <Link href="/contact">
               <Button className="bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 hover:scale-105 text-black font-semibold shadow-lg">
                 Demander un devis sur mesure →
@@ -108,6 +114,7 @@ export default function PricingPage() {
             </Link>
           </div>
         </section>
+
 
         {/* Footer note */}
         <p className="text-center text-sm text-white/60 italic pt-10">

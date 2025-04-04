@@ -23,6 +23,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
 
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   useEffect(() => {
     setMounted(true);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -31,13 +34,30 @@ export default function Navbar() {
     return () => unsubscribe();
   }, []);
 
+  // Scroll hide/show
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setShowNavbar(currentScrollY < lastScrollY || currentScrollY < 10);
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   const handleLogout = async () => {
     await signOut(auth);
     setOpen(false); // ferme le menu mobile après déconnexion
   };
 
+  const closeMenu = () => setOpen(false);
+
   return (
-    <header className="w-full backdrop-blur-md bg-white/5 dark:bg-black/30 border-b border-white/10 shadow-lg z-50">
+    <header
+      className={`fixed w-full top-0 left-0 z-50 transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      } backdrop-blur-md bg-white/5 dark:bg-black/30 border-b border-white/10 shadow-lg`}
+    >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
@@ -49,7 +69,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          {menuLinks}
+          {menuLinks(closeMenu)}
           {mounted && (
             <>
               {user ? (
@@ -107,15 +127,15 @@ export default function Navbar() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="md:hidden bg-black/40 backdrop-blur border-t border-white/10 px-6 pb-6 pt-4 text-sm font-medium space-y-4"
           >
-            <div className="space-y-3">{menuLinks}</div>
+            <div className="space-y-3">{menuLinks(closeMenu)}</div>
 
             <div className="border-t border-white/10 pt-4 space-y-2">
               {user ? (
                 <>
                   <Link
                     href="/user"
+                    onClick={closeMenu}
                     className="flex items-center gap-2 text-white/80 hover:text-white transition"
-                    onClick={() => setOpen(false)}
                   >
                     <User className="w-4 h-4" />
                     Mon profil
@@ -131,8 +151,8 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
+                  onClick={closeMenu}
                   className="flex items-center gap-2 text-white/80 hover:text-white transition"
-                  onClick={() => setOpen(false)}
                 >
                   <LogIn className="w-4 h-4" />
                   Connexion
@@ -146,41 +166,46 @@ export default function Navbar() {
   );
 }
 
-const menuLinks = (
+// ⬇ menuLinks reçoit maintenant closeMenu pour fermer automatiquement
+const menuLinks = (close) => (
   <>
     <Link
       href="/transcription"
+      onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
       Transcription Vidéo
     </Link>
     <Link
       href="/live-transcription"
+      onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
       Transcription Live
     </Link>
     <Link
       href="/pricing"
+      onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
       Tarifs
     </Link>
     <Link
       href="/faq"
+      onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
       FAQ
     </Link>
     <Link
       href="/contact"
+      onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
       Contact
     </Link>
   </>
-)
-
+);
 
 function themeToggle(theme, setTheme) {
   return (
