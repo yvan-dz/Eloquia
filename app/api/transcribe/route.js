@@ -25,18 +25,31 @@ export async function POST(req) {
       fs.writeFileSync(videoPath, buffer)
     }
 
-    // 🌐 Cas 2 : Vidéo en ligne (utilisation directe de yt-dlp)
+    // 🌐 Cas 2 : Vidéo en ligne (via yt-dlp-service avec base64)
     if (videoUrl && !file) {
-      console.log("🌐 Téléchargement direct via yt-dlp :", videoUrl)
+      console.log("🌐 Téléchargement de la vidéo via yt-dlp-service :", videoUrl)
       const tempFileName = `video-${Date.now()}.mp4`
       videoPath = path.join(os.tmpdir(), tempFileName)
 
-      const ytCmd = `yt-dlp -f best[ext=mp4] -o "${videoPath}" "${videoUrl}"`
-      const { stdout, stderr } = await execPromise(ytCmd)
+      const res = await fetch("https://yt-dlp-service-api-production.up.railway.app/api/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: videoUrl }),
+      })
 
-      if (stderr) {
-        console.warn("⚠️ yt-dlp stderr :", stderr)
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(`Erreur API yt-dlp-service: ${errText}`)
       }
+
+      const data = await res.json()
+
+      if (!data.base64) {
+        throw new Error("Réponse invalide de l'API : base64 manquant")
+      }
+
+      const buffer = Buffer.from(data.base64, "base64")
+      fs.writeFileSync(videoPath, buffer)
       console.log("✅ Vidéo téléchargée avec succès :", videoPath)
     }
 
@@ -92,7 +105,7 @@ export async function POST(req) {
       fs.unlinkSync(segmentPath)
     }
 
-    // ⏱ Estimation
+    // ⏱ Durée estimée
     const ffprobeCmd = `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${extractedAudioPath}"`
     const { stdout: durationOut } = await execPromise(ffprobeCmd)
     const durationSec = parseFloat(durationOut.trim()) || 0
