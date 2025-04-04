@@ -25,22 +25,34 @@ export async function POST(req) {
       fs.writeFileSync(videoPath, buffer)
     }
 
-    // 🌐 Cas 2 : URL vidéo en ligne
+    // 🌐 Cas 2 : URL vidéo en ligne (traité via yt-dlp-service)
     if (videoUrl && !file) {
-      console.log("🌐 Téléchargement de la vidéo depuis l’URL :", videoUrl)
+      console.log("🌐 Téléchargement de la vidéo via yt-dlp-service :", videoUrl)
       const tempFileName = `video-${Date.now()}.mp4`
       videoPath = path.join(os.tmpdir(), tempFileName)
-      const ytCommand = `yt-dlp -f mp4 -o "${videoPath}" "${videoUrl}"`
-
-
 
       try {
-        const { stderr } = await execPromise(ytCommand)
-        if (stderr) console.warn("⚠️ yt-dlp stderr :", stderr)
-        console.log("✅ Téléchargement terminé :", videoPath)
+        const res = await fetch("https://yt-dlp-service-api-production.up.railway.app/api/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: videoUrl }),
+        })
+
+        const json = await res.json()
+
+        if (!res.ok) {
+          throw new Error(json.error || "Erreur lors du téléchargement distant")
+        }
+
+        const { base64, filename } = json
+        const buffer = Buffer.from(base64, "base64")
+        videoPath = path.join(os.tmpdir(), filename || tempFileName)
+        fs.writeFileSync(videoPath, buffer)
+        console.log("✅ Téléchargement réussi :", videoPath)
+
       } catch (err) {
-        console.error("❌ Échec du téléchargement avec yt-dlp :", err)
-        return NextResponse.json({ error: "Impossible de télécharger la vidéo." }, { status: 500 })
+        console.error("❌ Échec via yt-dlp-service :", err)
+        return NextResponse.json({ error: "Impossible de télécharger la vidéo via l’API." }, { status: 500 })
       }
     }
 
