@@ -262,72 +262,72 @@ export default function LiveTranscriptionPage() {
           </div>
 
           {aiReply && (
-  <div className="space-y-4">
-    <h2 className="text-lg font-semibold text-white">💡 Discussion avec l’IA</h2>
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-white">💡 Discussion avec l’IA</h2>
 
-    <div className="bg-white/5 border border-white/10 rounded-xl p-4 h-[300px] overflow-y-auto shadow-inner space-y-4">
-      {chatMessages.map((msg, i) => (
-        <div
-          key={i}
-          className={`w-full sm:max-w-[80%] px-4 py-3 rounded-xl text-sm shadow-sm ${
-            msg.role === "user"
-              ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
-              : "bg-purple-500/20 text-pink-200"
-          }`}
-        >
-          <p className="font-semibold mb-1">
-            {msg.role === "user" ? "👤 Vous" : "🤖 IA"}
-          </p>
-          <p className="whitespace-pre-wrap">{msg.text}</p>
-        </div>
-      ))}
-      <div ref={scrollRef} />
-    </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 h-[300px] overflow-y-auto shadow-inner space-y-4">
+                {chatMessages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`w-full sm:max-w-[80%] px-4 py-3 rounded-xl text-sm shadow-sm ${msg.role === "user"
+                        ? "bg-blue-500/20 text-blue-200 ml-auto text-right"
+                        : "bg-purple-500/20 text-pink-200"
+                      }`}
+                  >
+                    <p className="font-semibold mb-1">
+                      {msg.role === "user" ? "👤 Vous" : "🤖 IA"}
+                    </p>
+                    <p className="whitespace-pre-wrap break-words">{msg.text}</p>
 
-    {/* Zone de question utilisateur */}
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
-      <div className="flex-1 relative">
-        <Textarea
-          value={chatInput}
-          onChange={(e) => setChatInput(e.target.value)}
-          onInput={(e) => {
-            const el = e.target
-            el.style.height = "auto"
-            el.style.height = `${Math.min(el.scrollHeight, 160)}px`
-          }}
-          placeholder="Posez une question à l'IA..."
-          className="w-full resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
-          style={{ transition: "height 0.2s ease" }}
-        />
-      </div>
-      <Button
-        onClick={askFollowUp}
-        className="bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg flex items-center sm:w-auto w-full"
-      >
-        <Send className="w-4 h-4 mr-1" />
-        Envoyer
-      </Button>
-    </div>
+                  </div>
+                ))}
+                <div ref={scrollRef} />
+              </div>
 
-    {/* Boutons d'export */}
-    <div className="flex flex-col sm:flex-row justify-end gap-2">
-      <Button
-        onClick={() => exportTxtChat(chatMessages)}
-        className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
-      >
-        <Download className="w-4 h-4 mr-2" />
-        Export Chat TXT
-      </Button>
-      <Button
-        onClick={() => exportPdfChat(chatMessages)}
-        className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
-      >
-        <FileText className="w-4 h-4 mr-2" />
-        Export Chat PDF
-      </Button>
-    </div>
-  </div>
-)}
+              {/* Zone de question utilisateur */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
+                <div className="flex-1 relative">
+                  <Textarea
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onInput={(e) => {
+                      const el = e.target
+                      el.style.height = "auto"
+                      el.style.height = `${Math.min(el.scrollHeight, 160)}px`
+                    }}
+                    placeholder="Posez une question à l'IA..."
+                    className="w-full resize-none bg-slate-800/60 border border-white/10 text-white rounded-xl p-3 max-h-40 overflow-auto"
+                    style={{ transition: "height 0.2s ease" }}
+                  />
+                </div>
+                <Button
+                  onClick={askFollowUp}
+                  className="bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg flex items-center sm:w-auto w-full"
+                >
+                  <Send className="w-4 h-4 mr-1" />
+                  Envoyer
+                </Button>
+              </div>
+
+              {/* Boutons d'export */}
+              <div className="flex flex-col sm:flex-row justify-end gap-2">
+                <Button
+                  onClick={() => exportTxtChat(chatMessages)}
+                  className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Chat TXT
+                </Button>
+                <Button
+                  onClick={() => exportPdfChat(chatMessages)}
+                  className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Export Chat PDF
+                </Button>
+              </div>
+            </div>
+          )}
 
 
         </div>
