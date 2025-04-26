@@ -24,7 +24,7 @@ export default function ProPage() {
                         Aucune donnée n’est envoyée sur des serveurs distants. Vos vidéos, audios et transcriptions restent exclusivement dans votre environnement.
                     </Feature>
                     <Feature icon={<Server className="text-pink-300 w-7 h-7" />} title="Installation sur vos machines">
-                        Déploiement flexible : fichier exécutable, installation serveur ou Docker. Utilisable même sans connexion Internet.
+                        Déploiement flexible : fichier exécutable, installation serveur ou Docker. Transcription possible même sans connexion Internet.
                     </Feature>
                     <Feature icon={<FileCheck2 className="text-purple-300 w-7 h-7" />} title="Performance professionnelle">
                         Transcription rapide, IA réactive, résumés détaillés, chat contextuel… optimisé pour vos charges de travail exigeantes.
@@ -65,27 +65,40 @@ export default function ProPage() {
                 </section>
 
 
-                {/* Bloc devis */}
-                <section className="text-center space-y-6">
-                    <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 text-transparent bg-clip-text">
-                        💼 Une offre sur mesure pour chaque organisation
+                {/* Bloc téléchargement Eloquia Pro */}
+                <section className="text-center space-y-8 p-8 border border-white/10 rounded-3xl backdrop-blur bg-white/5 shadow-2xl">
+                    <h2 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 text-transparent bg-clip-text drop-shadow">
+                        🖥️ Téléchargez Eloquia Pro pour Desktop
                     </h2>
+
                     <p className="text-white/70 text-lg max-w-2xl mx-auto">
-                        Que vous soyez une école, une entreprise, un cabinet juridique ou une structure média : nous adaptons Eloquia Pro à vos besoins spécifiques.
+                        Bénéficiez d'une expérience fluide et locale avec notre application dédiée.<br />
+                        Idéal pour les écoles, entreprises, cabinets juridiques et médias souhaitant aller plus loin.
                     </p>
-                    <Link href="/contact">
-                        <Button className="bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 hover:scale-105 text-black font-semibold shadow-lg">
-                            Demander un devis confidentiel →
+
+                    <Link href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v1/Eloquia.Assistant.Setup.1.0.0.exe" target="_blank">
+                        <Button className="mt-4 bg-gradient-to-r from-pink-400 via-purple-500 to-yellow-400 hover:scale-105 transition-all duration-300 text-black font-bold shadow-xl rounded-full px-8 py-4 text-lg">
+                            🚀 Télécharger Eloquia Pro pour Desktop
                         </Button>
                     </Link>
-                    <p className="text-white/40 text-sm italic">Réponse garantie sous 48h</p>
+
+                    <div className="text-white/60 text-sm italic max-w-md mx-auto pt-6 space-y-3">
+                        <p>⚠️ Une clé d’activation est requise pour utiliser l’application.</p>
+                        <p>
+                            Pour obtenir votre clé,
+                            <Link href="/contact" className="underline text-pink-400 hover:text-yellow-300 ml-1">
+                                contactez-nous →
+                            </Link>
+                        </p>
+                    </div>
                 </section>
+
 
                 {/* Contact direct */}
                 <div className="text-center pt-10 text-white/60 text-sm flex flex-col items-center gap-2">
                     <Mail className="w-5 h-5 text-pink-400" />
                     Vous préférez le contact direct ? Écrivez-nous à{" "}
-                    <a href="mailto:pro@eloquia.app" className="underline text-white hover:text-pink-300">Eloquia Team</a>
+                    <a href="yvandzefak1@gmail.com" className="underline text-white hover:text-pink-300">Eloquia Team</a>
                 </div>
             </div>
         </div>
