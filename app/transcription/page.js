@@ -118,7 +118,7 @@ export default function TranscriptionPage() {
                 <strong className="block text-yellow-800 mb-1">⚠️ Information importante :</strong>
                 Pour des raisons de droits d’auteur et de confidentialité, nous ne pouvons pas garantir la transcription de contenus YouTube et autres sources protégées.
                 <br />
-                Merci de <strong>télécharger la vidéo</strong> et de l’importer directement depuis votre appareil.
+               En cas d'échec, merci de <strong>télécharger la vidéo</strong> et de l’importer directement depuis votre appareil.
               </div>
             )}
 
