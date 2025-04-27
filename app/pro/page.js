@@ -76,7 +76,7 @@ export default function ProPage() {
                         Idéal pour les écoles, entreprises, cabinets juridiques et médias souhaitant aller plus loin.
                     </p>
 
-                    <Link href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v1/Eloquia.Assistant.Setup.1.0.0.exe" target="_blank">
+                    <Link href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v1_exe/Eloquia.Assistant.exe" target="_blank">
                         <Button className="mt-4 bg-gradient-to-r from-pink-400 via-purple-500 to-yellow-400 hover:scale-105 transition-all duration-300 text-black font-bold shadow-xl rounded-full px-8 py-4 text-lg">
                             🚀 Télécharger Eloquia Pro pour Desktop
                         </Button>
