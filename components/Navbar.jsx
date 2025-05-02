@@ -48,7 +48,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    setOpen(false); // ferme le menu mobile après déconnexion
+    setOpen(false); // closes the mobile menu after logout
   };
 
   const closeMenu = () => setOpen(false);
@@ -79,14 +79,14 @@ export default function Navbar() {
                     className="flex items-center gap-1 text-white/80 hover:text-white transition"
                   >
                     <User className="w-4 h-4" />
-                    Profil
+                    Profile
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-1 text-white/80 hover:text-white transition"
                   >
                     <LogOut className="w-4 h-4" />
-                    Déconnexion
+                    Logout
                   </button>
                 </>
               ) : (
@@ -95,7 +95,7 @@ export default function Navbar() {
                   className="flex items-center gap-1 text-white/80 hover:text-white transition"
                 >
                   <LogIn className="w-4 h-4" />
-                  Connexion
+                  Login
                 </Link>
               )}
               {themeToggle(theme, setTheme)}
@@ -109,7 +109,7 @@ export default function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             className="text-white/80 hover:text-white transition"
-            aria-label="Ouvrir le menu"
+            aria-label="Open menu"
           >
             {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -138,14 +138,14 @@ export default function Navbar() {
                     className="flex items-center gap-2 text-white/80 hover:text-white transition"
                   >
                     <User className="w-4 h-4" />
-                    Mon profil
+                    My Profile
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-2 text-white/80 hover:text-white transition w-full text-left"
                   >
                     <LogOut className="w-4 h-4" />
-                    Déconnexion
+                    Logout
                   </button>
                 </>
               ) : (
@@ -155,7 +155,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 text-white/80 hover:text-white transition"
                 >
                   <LogIn className="w-4 h-4" />
-                  Connexion
+                  Login
                 </Link>
               )}
             </div>
@@ -166,29 +166,33 @@ export default function Navbar() {
   );
 }
 
-// ⬇ menuLinks reçoit maintenant closeMenu pour fermer automatiquement
+// ⬇ menuLinks now receives closeMenu to automatically close
 const menuLinks = (close) => (
   <>
+
+    <Link
+      href="/live-chat"
+      onClick={close}
+      className="block text-white/80 hover:text-white transition"
+    >
+      Live-Chat
+    </Link>
+
+
     <Link
       href="/transcription"
       onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
-      Transcription Vidéo
+      Video Transcription
     </Link>
-    <Link
-      href="/live-transcription"
-      onClick={close}
-      className="block text-white/80 hover:text-white transition"
-    >
-      Transcription Live
-    </Link>
+
     <Link
       href="/pricing"
       onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
-      Tarifs
+      Pricing
     </Link>
     <Link
       href="/pro"
@@ -208,13 +212,12 @@ const menuLinks = (close) => (
   </>
 )
 
-
 function themeToggle(theme, setTheme) {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="text-white/80 hover:text-white transition"
-      aria-label="Changer de thème"
+      aria-label="Toggle theme"
     >
       {theme === "dark" ? (
         <Sun className="w-5 h-5" />

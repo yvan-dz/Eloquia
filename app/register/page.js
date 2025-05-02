@@ -19,8 +19,9 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault()
     setError("")
+
     if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.")
+      setError("Passwords do not match.")
       return
     }
 
@@ -29,7 +30,7 @@ export default function RegisterPage() {
       await createUserWithEmailAndPassword(auth, email, password)
       router.push("/")
     } catch (err) {
-      setError("Erreur lors de la création du compte. Email déjà utilisé ?")
+      setError("Account creation failed. Is this email already in use?")
       setLoading(false)
     }
   }
@@ -38,15 +39,15 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] px-6 text-white">
       <div className="max-w-md w-full bg-white/5 border border-white/10 backdrop-blur-md p-8 rounded-3xl shadow-2xl space-y-6">
         <h1 className="text-3xl md:text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-400 text-transparent bg-clip-text">
-          📝 Créer un compte Eloquia
+          📝 Create an Eloquia Account
         </h1>
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1 text-white/80">Adresse e-mail</label>
+            <label className="block text-sm mb-1 text-white/80">Email address</label>
             <Input
               type="email"
-              placeholder="exemple@eloquia.com"
+              placeholder="example@eloquia.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -55,7 +56,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1 text-white/80">Mot de passe</label>
+            <label className="block text-sm mb-1 text-white/80">Password</label>
             <Input
               type="password"
               placeholder="••••••••"
@@ -67,7 +68,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1 text-white/80">Confirmer le mot de passe</label>
+            <label className="block text-sm mb-1 text-white/80">Confirm password</label>
             <Input
               type="password"
               placeholder="••••••••"
@@ -88,18 +89,18 @@ export default function RegisterPage() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="animate-spin w-4 h-4" />
-                Création du compte...
+                Creating account...
               </span>
             ) : (
-              "Créer mon compte"
+              "Create my account"
             )}
           </Button>
         </form>
 
         <p className="text-center text-sm text-white/60">
-          Déjà inscrit ?{" "}
+          Already registered?{" "}
           <a href="/login" className="text-yellow-300 hover:underline">
-            Me connecter
+            Sign in
           </a>
         </p>
       </div>

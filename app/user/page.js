@@ -34,28 +34,28 @@ export default function UserPage() {
 
   const handlePasswordChange = async () => {
     setMessage("")
-    if (!newPassword) return setMessage("⚠️ Nouveau mot de passe requis.")
+    if (!newPassword) return setMessage("⚠️ New password required.")
     try {
       setLoading(true)
       await updatePassword(user, newPassword)
-      setMessage("✅ Mot de passe mis à jour avec succès.")
+      setMessage("✅ Password successfully updated.")
       setNewPassword("")
     } catch (err) {
-      setMessage("❌ Erreur lors de la mise à jour.")
+      setMessage("❌ Error while updating password.")
     } finally {
       setLoading(false)
     }
   }
 
   const handleDeleteAccount = async () => {
-    if (!confirm("Êtes-vous sûr ? Cette action est irréversible.")) return
+    if (!confirm("Are you sure? This action is irreversible.")) return
     try {
       setLoading(true)
       await deleteUser(user)
-      setMessage("🗑️ Compte supprimé.")
+      setMessage("🗑️ Account deleted.")
       router.push("/register")
     } catch (err) {
-      setMessage("❌ Erreur. Vous devez vous reconnecter pour supprimer le compte.")
+      setMessage("❌ Error. You must log in again to delete your account.")
       setLoading(false)
     }
   }
@@ -65,7 +65,7 @@ export default function UserPage() {
       <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white py-20 px-4">
         <div className="max-w-lg mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl p-8 space-y-8">
           <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-400 text-transparent bg-clip-text">
-            👤 Mon Profil
+            👤 My Profile
           </h1>
 
           <div className="text-center text-white/80 text-sm flex items-center justify-center gap-2">
@@ -74,7 +74,7 @@ export default function UserPage() {
           </div>
 
           <div className="space-y-4">
-            <label className="block text-sm text-white/70">🔒 Nouveau mot de passe</label>
+            <label className="block text-sm text-white/70">🔒 New password</label>
             <div className="relative">
               <Lock className="absolute left-3 top-3.5 h-4 w-4 text-white/40" />
               <Input
@@ -90,7 +90,7 @@ export default function UserPage() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full shadow-lg"
             >
-              {loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Mettre à jour"}
+              {loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Update password"}
             </Button>
           </div>
 
@@ -100,7 +100,7 @@ export default function UserPage() {
               className="w-full bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
-              Supprimer mon compte
+              Delete my account
             </Button>
           </div>
 

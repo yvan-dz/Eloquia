@@ -22,8 +22,9 @@ export default function Loading() {
 
       {/* Texte responsive */}
       <p className="mt-10 text-white/80 text-base sm:text-sm animate-pulse max-w-xs sm:max-w-md">
-        L’univers <span className="text-pink-400 font-semibold">Eloquia</span> se prépare...
+        The <span className="text-pink-400 font-semibold">Eloquia</span> universe is loading...
       </p>
+
     </div>
   )
 }

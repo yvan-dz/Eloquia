@@ -81,7 +81,7 @@ export default function TranscriptionPage() {
       <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white py-16 px-4">
         <div className="max-w-3xl mx-auto bg-white/5 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 p-8 space-y-10">
           <h1 className="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent tracking-tight">
-            🎥 Assistant Vidéo Intelligent
+            🎥 Smart Video Assistant
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,11 +95,11 @@ export default function TranscriptionPage() {
               className="bg-white/10 border border-white/20 file:text-white"
             />
 
-            <p className="text-center text-slate-400">— ou —</p>
+            <p className="text-center text-slate-400">— or —</p>
 
             <Input
               type="url"
-              placeholder="Lien vers une vidéo (YouTube, etc.)"
+              placeholder="Link to a video (YouTube, etc.)"
               value={videoUrl}
               onChange={(e) => {
                 setVideoUrl(e.target.value)
@@ -108,17 +108,20 @@ export default function TranscriptionPage() {
               className="bg-white/10 border border-white/20 text-white placeholder:text-slate-400"
             />
 
-            <div className="text-sm text-yellow-300 cursor-pointer hover:underline mt-1 flex items-center gap-2" onClick={() => setShowYoutubeNote(!showYoutubeNote)}>
+            <div
+              className="text-sm text-yellow-300 cursor-pointer hover:underline mt-1 flex items-center gap-2"
+              onClick={() => setShowYoutubeNote(!showYoutubeNote)}
+            >
               <Info className="w-4 h-4" />
-              💡 Note pour les liens YouTube et autres sources protégées
+              💡 Note about YouTube links and protected sources
             </div>
 
             {showYoutubeNote && (
               <div className="bg-yellow-100 text-black text-sm p-4 rounded-lg border border-yellow-300 shadow-md transition-all">
-                <strong className="block text-yellow-800 mb-1">⚠️ Information importante :</strong>
-                Pour des raisons de droits d’auteur et de confidentialité, nous ne pouvons pas garantir la transcription de contenus YouTube et autres sources protégées.
+                <strong className="block text-yellow-800 mb-1">⚠️ Important notice:</strong>
+                Due to copyright and privacy reasons, we cannot guarantee transcription for YouTube or other protected sources.
                 <br />
-               En cas d'échec, merci de <strong>télécharger la vidéo</strong> et de l’importer directement depuis votre appareil.
+                If it fails, please <strong>download the video</strong> and upload it directly from your device.
               </div>
             )}
 
@@ -129,11 +132,11 @@ export default function TranscriptionPage() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" /> Transcription...
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" /> Transcribing...
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 mr-2" /> Lancer la transcription
+                  <Sparkles className="w-4 h-4 mr-2" /> Start transcription
                 </>
               )}
             </Button>
@@ -150,13 +153,13 @@ export default function TranscriptionPage() {
                 <div className="text-right mt-2">
                   <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700">
                     <Download className="w-4 h-4 mr-2" />
-                    Télécharger
+                    Download
                   </Button>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-lg font-semibold text-white">💬 Assistant IA</h2>
+                <h2 className="text-lg font-semibold text-white">💬 AI Assistant</h2>
                 <div className="space-y-3 max-h-64 overflow-y-auto bg-white/5 border border-white/10 rounded-lg p-4">
                   {chat.map((msg, idx) => (
                     <div
@@ -164,18 +167,18 @@ export default function TranscriptionPage() {
                       className={msg.role === "user" ? "text-right text-blue-300" : "text-left text-white"}
                     >
                       <p className="text-sm whitespace-pre-wrap">
-                        <strong>{msg.role === "user" ? "Vous :" : "IA :"}</strong> {msg.content}
+                        <strong>{msg.role === "user" ? "You:" : "AI:"}</strong> {msg.content}
                       </p>
                     </div>
                   ))}
-                  {chatLoading && <p className="text-slate-400 italic">Réflexion en cours…</p>}
+                  {chatLoading && <p className="text-slate-400 italic">Thinking…</p>}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-2 mt-4">
                   <Textarea
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Pose ta question ici..."
+                    placeholder="Ask your question here..."
                     rows={1}
                     onInput={(e) => {
                       const el = e.target
@@ -198,10 +201,10 @@ export default function TranscriptionPage() {
                         const timestamp = new Date().toISOString().replace(/[:.]/g, "-")
                         const filename = `conversation-${timestamp}.txt`
                         const chatContent = chat.map((msg) => {
-                          const prefix = msg.role === "user" ? "👤 Vous" : "🤖 IA"
+                          const prefix = msg.role === "user" ? "👤 You" : "🤖 AI"
                           return `${prefix}:\n${msg.content}\n`
                         }).join("\n-------------------------\n")
-                        const formatted = `🧠 Conversation IA – Assistant Vidéo\n\n${chatContent}\n\nExporté le ${new Date().toLocaleString()}`
+                        const formatted = `🧠 AI Conversation – Video Assistant\n\n${chatContent}\n\nExported on ${new Date().toLocaleString()}`
                         const blob = new Blob([formatted], { type: "text/plain" })
                         const url = URL.createObjectURL(blob)
                         const a = document.createElement("a")
@@ -213,7 +216,7 @@ export default function TranscriptionPage() {
                       className="bg-yellow-600 hover:bg-yellow-700"
                     >
                       <Download className="w-4 h-4 mr-1" />
-                      Exporter le chat
+                      Export chat
                     </Button>
                   </div>
                 </div>

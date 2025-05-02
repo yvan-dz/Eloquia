@@ -5,37 +5,37 @@ import Link from "next/link";
 
 const plans = [
   {
-    title: "Découverte",
-    price: "4.99€/mois",
+    title: "Discovery",
+    price: "€4.99/month",
     features: [
-      "3 heures/mois",
-      "Transcription standard",
-      "Export TXT",
-      "IA de base : résumé & questions",
+      "3 hours/month",
+      "Standard transcription",
+      "TXT export",
+      "Basic AI: summary & questions",
     ],
   },
   {
     title: "Standard",
-    price: "13.99€/mois",
+    price: "€13.99/month",
     highlight: true,
     features: [
-      "10 heures/mois",
-      "Transcription avancée",
-      "Résumé & chat IA",
-      "Export TXT & PDF",
-      "Support email prioritaire",
+      "10 hours/month",
+      "Advanced transcription",
+      "Summary & AI chat",
+      "TXT & PDF export",
+      "Priority email support",
     ],
   },
   {
     title: "Pro",
-    price: "29.99€/mois",
+    price: "€29.99/month",
     features: [
-      "20 heures/mois",
-      "Toutes les fonctionnalités IA",
-      "3h de transcription live (micro + texte en temps réel)",
-      "Export PDF illimité",
-      "Accès anticipé aux nouveautés",
-      "Support prioritaire",
+      "20 hours/month",
+      "All AI features",
+      "3h of live transcription (microphone + real-time text)",
+      "Unlimited PDF export",
+      "Early access to new features",
+      "Priority support",
     ],
   },
 ];
@@ -44,7 +44,7 @@ export default function Pricing() {
   return (
     <section className="text-center space-y-8">
       <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-400 text-transparent bg-clip-text">
-        💸 Tarification flexible
+        💸 Flexible Pricing
       </h2>
 
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -63,19 +63,19 @@ export default function Pricing() {
               ))}
             </ul>
             <Button className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:brightness-110">
-              Choisir
+              Choose
             </Button>
           </div>
         ))}
       </div>
 
       <div className="text-sm text-white/60 italic max-w-xl mx-auto pt-4">
-        Besoin de plus ? Pour les usages intensifs (écoles, médias, entreprises…)
+        Need more? For high-volume use (schools, media, companies…)
         <Link
           href="/contact"
           className="text-pink-400 font-semibold hover:underline ml-1"
         >
-          contactez-nous pour un tarif sur mesure →
+          contact us for a custom plan →
         </Link>
       </div>
     </section>

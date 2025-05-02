@@ -1,30 +1,29 @@
-// components/Usecases.jsx
 "use client";
 
 const useCases = [
   {
-    title: "🎙️ Créateurs de contenu",
-    desc: "Transcrivez vos vidéos YouTube, TikTok ou podcasts automatiquement. Gagnez du temps pour les sous-titres, résumés et scripts.",
+    title: "🎙️ Content Creators",
+    desc: "Automatically transcribe your YouTube, TikTok or podcast videos. Save time on subtitles, summaries, and scripts.",
   },
   {
-    title: "📢 Journalistes & Interviewers",
-    desc: "Importez vos interviews, résumez-les, extrayez les moments clés ou interrogez directement le contenu.",
+    title: "📢 Journalists & Interviewers",
+    desc: "Import your interviews, summarize them, extract key moments or query the content directly.",
   },
   {
-    title: "⚖️ Juridique & RH",
-    desc: "Analyse de réunions, comptes rendus juridiques, synthèse de documents audios confidentiels en toute sécurité.",
+    title: "⚖️ Legal & HR",
+    desc: "Securely analyze meetings, legal reports, or confidential audio documents with ease.",
   },
   {
-    title: "🧑‍🏫 Enseignants & Étudiants",
-    desc: "Transcription de cours, résumés intelligents, révisions guidées. Eloquia devient votre assistant de révision.",
+    title: "🧑‍🏫 Teachers & Students",
+    desc: "Transcribe lectures, get smart summaries, and guided revisions. Eloquia becomes your study assistant.",
   },
   {
-    title: "👩‍💼 Services clients & CRM",
-    desc: "Enregistrez vos appels ou réunions avec vos clients et transformez-les en comptes rendus automatiques exploitables.",
+    title: "👩‍💼 Customer Service & CRM",
+    desc: "Record your calls or client meetings and turn them into actionable automated reports.",
   },
   {
-    title: "💡 Startups & Produit",
-    desc: "Regroupez vos notes vocales, brainstormings, retours utilisateurs et construisez vos décisions produit plus rapidement.",
+    title: "💡 Startups & Product Teams",
+    desc: "Gather voice notes, brainstorming sessions, and user feedback to build your product decisions faster.",
   },
 ];
 
@@ -34,10 +33,10 @@ export default function Usecases() {
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-pink-700/10 to-yellow-500/10 blur-[100px] opacity-30 z-0" />
       <div className="relative z-10 space-y-12 max-w-6xl mx-auto">
         <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-yellow-300 text-transparent bg-clip-text drop-shadow">
-          ✨ Cas d’usage concrets d’Eloquia
+          ✨ Real Use Cases of Eloquia
         </h3>
         <p className="text-white/70 text-lg max-w-2xl mx-auto">
-          Eloquia s’adapte à tous les métiers. Découvrez comment notre IA change la donne selon votre secteur.
+          Eloquia adapts to all professions. Discover how our AI transforms workflows in your sector.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 text-left">

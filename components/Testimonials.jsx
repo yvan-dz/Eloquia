@@ -4,31 +4,30 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "Je gagne un temps fou en analysant mes interviews avec Eloquia. L’IA comprend tout et reformule mieux que mes assistants.",
+    quote: "I save a tremendous amount of time analyzing my interviews with Eloquia. The AI understands everything and rephrases better than my assistants.",
     name: "Léa R.",
-    role: "Journaliste & Podcasteuse",
+    role: "Journalist & Podcaster",
   },
   {
-    quote: "Avec Eloquia, je transforme mes réunions Zoom en synthèses claires. Idéal pour mes projets en startup.",
+    quote: "With Eloquia, I turn my Zoom meetings into clear summaries. Ideal for my startup projects.",
     name: "Karim B.",
-    role: "Chef de produit digital",
+    role: "Digital Product Manager",
   },
   {
-    quote: "J'utilise Eloquia pour réviser mes cours et poser des questions à l'IA, c’est devenu mon tuteur personnel.",
+    quote: "I use Eloquia to review my classes and ask the AI questions — it’s become my personal tutor.",
     name: "Manon T.",
-    role: "Étudiante en droit",
+    role: "Law Student",
   },
   {
-    quote: "Une plateforme qui respecte ma confidentialité tout en boostant ma productivité ? Eloquia coche toutes les cases.",
+    quote: "A platform that respects my privacy while boosting my productivity? Eloquia ticks all the boxes.",
     name: "Nicolas M.",
-    role: "Consultant RH",
+    role: "HR Consultant",
   },
 ];
 
 export default function Testimonials() {
   const [index, setIndex] = useState(0);
 
-  // auto-scroll
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % testimonials.length);
@@ -37,15 +36,14 @@ export default function Testimonials() {
   }, []);
 
   const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
-  const prev = () =>
-    setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
   const current = testimonials[index];
 
   return (
     <section className="relative py-20 px-6 overflow-hidden">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 bg-gradient-to-r from-purple-300 via-pink-300 to-yellow-300 text-transparent bg-clip-text drop-shadow">
-        💬 Ils nous font confiance
+        💬 Trusted by Our Users
       </h2>
 
       <div className="relative max-w-2xl mx-auto bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-xl shadow-xl transition-all duration-500">
@@ -57,12 +55,12 @@ export default function Testimonials() {
           <span className="text-white/60">{current.role}</span>
         </p>
 
-        {/* Boutons navigation */}
+        {/* Navigation buttons */}
         <div className="absolute top-1/2 left-0 transform -translate-y-1/2 px-2">
           <button
             onClick={prev}
             className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition text-white"
-            aria-label="Témoignage précédent"
+            aria-label="Previous testimonial"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -71,20 +69,18 @@ export default function Testimonials() {
           <button
             onClick={next}
             className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition text-white"
-            aria-label="Témoignage suivant"
+            aria-label="Next testimonial"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Petits points d’indicateur */}
+        {/* Indicator dots */}
         <div className="flex justify-center gap-2 mt-6">
           {testimonials.map((_, i) => (
             <div
               key={i}
-              className={`w-3 h-3 rounded-full ${
-                i === index ? "bg-pink-400" : "bg-white/20"
-              } transition`}
+              className={`w-3 h-3 rounded-full ${i === index ? "bg-pink-400" : "bg-white/20"} transition`}
             />
           ))}
         </div>

@@ -6,41 +6,40 @@ import { motion, AnimatePresence } from "framer-motion"
 
 const faqs = [
   {
-    question: "Comment fonctionne la transcription vidéo ?",
+    question: "How does video transcription work?",
     answer:
-      "L’assistant convertit automatiquement vos fichiers audio ou vidéo en texte, pour vous permettre une analyse fluide, rapide et intuitive.",
+      "The assistant automatically converts your audio or video files into text, allowing for smooth, fast, and intuitive analysis.",
   },
   {
-    question: "Mes données sont-elles enregistrées ?",
+    question: "Is my data stored?",
     answer:
-      "Non. Par respect total de votre vie privée, aucune donnée personnelle ni transcription n’est stockée. Vos fichiers sont traités en temps réel et supprimés ensuite.",
+      "No. Out of full respect for your privacy, no personal data or transcription is saved. Your files are processed in real time and then deleted.",
   },
   {
-    question: "Puis-je discuter avec l’IA après la transcription ?",
+    question: "Can I talk to the AI after the transcription?",
     answer:
-      "Oui. Une fois la transcription terminée, vous pouvez poser des questions, demander un résumé ou poursuivre la discussion comme avec un véritable assistant personnel.",
+      "Yes. Once the transcription is complete, you can ask questions, request a summary, or continue the conversation like with a real personal assistant.",
   },
   {
-    question: "Peut-elle corriger les fautes ou améliorer le style ?",
+    question: "Can it correct mistakes or improve writing style?",
     answer:
-      "Absolument. L’IA corrige les erreurs et reformule élégamment votre texte tout en restant fidèle à l’intention originale.",
+      "Absolutely. The AI corrects errors and elegantly rewrites your text while staying true to your original intent.",
   },
   {
-    question: "Puis-je utiliser l’assistant avec des vidéos en ligne ?",
+    question: "Can I use the assistant with online videos?",
     answer:
-      "Oui. Il vous suffit de coller un lien vers la vidéo concernée. Le système se chargera du reste, automatiquement.",
+      "Yes. You simply paste a link to the video. The system handles the rest automatically.",
   },
   {
-    question: "Existe-t-il une version en direct (live) ?",
+    question: "Is there a live version?",
     answer:
-      "Oui. Un mode spécial permet d’enregistrer et transcrire en direct, avec la possibilité d’interagir avec l’IA en temps réel.",
+      "Yes. A special mode allows real-time recording and transcription, with the ability to interact with the AI live.",
   },
   {
-    question: "Puis-je exporter mes transcriptions ?",
+    question: "Can I export my transcriptions?",
     answer:
-      "Bien sûr. Vous pouvez télécharger votre transcription ou la conversation avec l’IA à tout moment, au format texte.",
+      "Of course. You can download your transcription or the AI conversation at any time in plain text format.",
   },
-
 ]
 
 export default function FAQPage() {
@@ -55,10 +54,10 @@ export default function FAQPage() {
       <div className="max-w-5xl mx-auto space-y-14">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-300 bg-clip-text text-transparent">
-            ✨ Foire Aux Questions
+            ✨ Frequently Asked Questions
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
-            Vous avez une question ? Nous avons la réponse. Voici les interrogations les plus fréquentes à propos de notre assistant vidéo IA.
+            Got a question? We’ve got the answer. Here are the most common questions about our AI video assistant.
           </p>
         </div>
 

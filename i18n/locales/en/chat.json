@@ -1,0 +1,19 @@
+{
+  "greetingMorning": "☀️ Good morning, I’m Eloquia, your learning partner.",
+  "greetingAfternoon": "🌤️ Good afternoon, I’m Eloquia, your learning partner.",
+  "greetingEvening": "🌙 Good evening, I’m Eloquia, your learning partner.",
+  "saySomething": "Are you ready to practice with me today?",
+  "talkToEloquia": "🎙️ Talk to Eloquia",
+  "stopTalking": "🛑 Stop talking",
+  "processing": "⏳ Processing...",
+  "send": "Send",
+  "inputPlaceholder": "Type your message here...",
+  "defaultBotReply": "I didn’t understand.",
+  "errorAI": "Communication error with the AI.",
+  "errorSTT": "Transcription error.",
+  "newConversation": "🗑️ New conversation",
+  "you": "You",
+  "mute": "Mute voice",
+  "unmute": "Unmute voice",
+  "stopAudio": "Stop voice"
+}

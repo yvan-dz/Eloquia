@@ -7,16 +7,16 @@ export default function Footer() {
 
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
         
-        {/* © Texte gauche */}
+        {/* © Left text */}
         <div className="text-center md:text-left text-white/60 text-sm">
-          © {new Date().getFullYear()} <span className="font-semibold text-white">Eloquia</span>. Tous droits réservés.
+          © {new Date().getFullYear()} <span className="font-semibold text-white">Eloquia</span>. All rights reserved.
         </div>
 
-        {/* Liens droits */}
+        {/* Right links */}
         <div className="flex flex-wrap justify-center md:justify-end gap-4 text-sm">
-          <FooterLink href="/about" label="À propos" />
-          <FooterLink href="/mentions-legales" label="Mentions légales" />
-          <FooterLink href="/confidentialite" label="Confidentialité" />
+          <FooterLink href="/about" label="About" />
+          <FooterLink href="/mentions-legales" label="Legal Notice" />
+          <FooterLink href="/confidentialite" label="Privacy Policy" />
           <FooterLink href="/faq" label="FAQ" />
         </div>
       </div>
