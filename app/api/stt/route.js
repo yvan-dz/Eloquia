@@ -2,15 +2,16 @@ import { NextResponse } from "next/server";
 import speech from "@google-cloud/speech";
 import { Buffer } from "buffer";
 
-// Client Google Cloud avec la clé stockée localement
-const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
-
+// 🔐 Convertit la base64 en JSON
+const keyBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
+const credentials = JSON.parse(Buffer.from(keyBase64, "base64").toString("utf-8"));
+if (!process.env.GOOGLE_CREDENTIALS_BASE64) {
+    throw new Error("La variable GOOGLE_CREDENTIALS_BASE64 est manquante.");
+  }  
 const sttClient = new speech.SpeechClient({
-    credentials: {
-        client_email: credentials.client_email,
-        private_key: credentials.private_key,
-    },
+  credentials,
 });
+
 
 
 export async function POST(req) {
