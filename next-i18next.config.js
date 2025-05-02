@@ -1,6 +1,8 @@
+// next.config.js
 module.exports = {
   i18n: {
-    defaultLocale: "en", // ← langue par défaut
-    locales: ["en", "fr", "de", "es"],
+    locales: ["fr", "en", "de", "es"],
+    defaultLocale: "en",
+    localeDetection: false, // <- désactive la détection auto
   },
 };
