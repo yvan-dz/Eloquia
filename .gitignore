@@ -43,4 +43,5 @@ next-env.d.ts
 # Fichiers sensibles à ne pas suivre
 .env.local
 google-stt.json
+google-service-key.json
 tmp/
