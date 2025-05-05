@@ -166,7 +166,14 @@ export default function LiveChatPage() {
 
           {/* Sélecteur de langue visible & intégré */}
           <div className="mt-2">
-            <LanguageSelector currentLang={i18n.language} onChange={i18n.changeLanguage} />
+            <LanguageSelector
+              currentLang={i18n.language}
+              onChange={(lang) => {
+                i18n.changeLanguage(lang);
+                setMessages([]); // 🧹 Vide le chat
+              }}
+            />
+
           </div>
         </div>
 

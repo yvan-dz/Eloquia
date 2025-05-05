@@ -4,7 +4,7 @@
   "greetingEvening": "🌙 Douce soirée, c’est moi Eloquia, ta partenaire d’apprentissage.",
   "saySomething": "Es-tu prêt(e) à t’exercer avec moi aujourd’hui ?",
   "talkToEloquia": "🎙️ Parler à Eloquia",
-  "stopTalking": "🛑 Arrêter de parler",
+  "stopTalking": "🛑 J'ai fini de parler",
   "processing": "⏳ Traitement...",
   "send": "Envoyer",
   "inputPlaceholder": "Tape ton message ici...",
@@ -13,7 +13,7 @@
   "errorSTT": "Erreur de transcription.",
   "newConversation": "🗑️ Nouvelle conversation",
   "you": "Vous",
-  "mute": "Couper le son",
-  "unmute": "Activer le son",
-  "stopAudio": "Arrêter la voix"
+  "mute": "Mute Eloquia 🤐",
+  "unmute": "Activer Eloquia",
+  "stopAudio": "Couper Eloquia 🤫"
 }
