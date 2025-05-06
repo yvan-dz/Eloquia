@@ -75,11 +75,20 @@ export default function ProPage() {
             Ideal for schools, companies, law firms and media that want to go further.
           </p>
 
-          <Link href="/Eloquia.Assistant.exe" target="_blank">
-            <Button className="mt-4 bg-gradient-to-r from-pink-400 via-purple-500 to-yellow-400 hover:scale-105 transition-all duration-300 text-black font-bold shadow-xl rounded-full px-8 py-4 text-lg">
+          <Link
+            href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v2_multilingual/Eloquia.Assistant.exe"
+            target="_blank"
+          >
+            <Button
+              className="mt-4 bg-gradient-to-r from-pink-400 via-purple-500 to-yellow-400 hover:scale-105 transition-all duration-300 text-black font-bold shadow-xl rounded-full 
+      px-4 py-2 text-sm
+      sm:px-6 sm:py-3 sm:text-base
+      md:px-8 md:py-4 md:text-lg"
+            >
               🚀 Download Eloquia Pro for Desktop
             </Button>
           </Link>
+
 
 
           <div className="text-white/60 text-sm italic max-w-md mx-auto pt-6 space-y-3">
