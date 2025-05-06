@@ -76,7 +76,7 @@ export default function ProPage() {
           </p>
 
           <Link
-            href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v2_multilingual/Eloquia.Assistant.exe"
+            href="https://github.com/yvan-dz/Eloquia/releases/download/eloquia_v2_multilingual/Eloquia.Assistant.Setup.1.0.0.exe"
             target="_blank"
           >
             <Button
