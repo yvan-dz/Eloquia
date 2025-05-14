@@ -1,17 +1,27 @@
 import { NextResponse } from "next/server";
 
+// 🔧 Nettoyage du texte avant TTS
+function cleanTextForTTS(text) {
+  return text
+    .replace(/[*_`~>#|]/g, "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export async function POST(req) {
   try {
     const { prompt, lang = "fr", history = [] } = await req.json();
 
     if (!prompt) {
       console.warn("[ASK] ❌ Prompt manquant !");
-      return NextResponse.json({ error: "Texte manquant" }, { status: 400 });
+      return NextResponse.json({ error: "Missing input text." }, { status: 400 });
     }
 
-    console.log("[ASK] 🧠 Envoi à Gemini :", prompt, "| Langue :", lang);
+    console.log("[ASK] 🔹 Lang:", lang);
+    console.log("[ASK] 🧠 Prompt reçu :", prompt);
+    console.log("[ASK] 🕓 Historique précédent :", history.length, "messages");
 
-    // Langue cible lisible
     const langLabelMap = {
       fr: "le français",
       en: "English",
@@ -20,7 +30,6 @@ export async function POST(req) {
     };
     const langLabel = langLabelMap[lang] || "la langue cible";
 
-    // Prompt système personnalisé
     const systemPrompt = `Tu es une IA qui accompagne un utilisateur dans l’apprentissage des langues.
 
 Réponds toujours dans la langue cible : ${langLabel}.
@@ -29,7 +38,6 @@ L'utilisateur est apprenant : tu corriges ses fautes rapidement et de facon bien
 Pas de disclaimer. Pas de liste. Pas de syntaxe technique.
 Sois bref (2 à 5 phrases), chaleureux et fluide.`;
 
-    // Historique de conversation (max 6)
     const formattedHistory = history.slice(-6).map((msg) => ({
       role: msg.sender === "user" ? "user" : "model",
       parts: [{ text: msg.text }],
@@ -40,6 +48,8 @@ Sois bref (2 à 5 phrases), chaleureux et fluide.`;
       ...formattedHistory,
       { role: "user", parts: [{ text: prompt }] },
     ];
+
+    console.log("[ASK] 📤 Envoi à Gemini...");
 
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -54,14 +64,15 @@ Sois bref (2 à 5 phrases), chaleureux et fluide.`;
 
     if (!geminiRes.ok) {
       console.error("[ASK] ❌ Erreur Gemini :", geminiData);
-      return NextResponse.json({ error: geminiData }, { status: geminiRes.status });
+      return NextResponse.json({ error: "AI processing failed." }, { status: geminiRes.status });
     }
 
-    const reply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "Je n’ai pas compris.";
+    const rawReply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "I didn’t understand.";
+    const reply = cleanTextForTTS(rawReply);
 
-    console.log("[ASK] ✅ Réponse Gemini :", reply);
+    console.log("[ASK] ✅ Réponse AI (brute) :", JSON.stringify(rawReply));
+    console.log("[ASK] 🧼 Réponse nettoyée :", reply);
 
-    // Sélection voix TTS
     const voices = {
       fr: "fr-FR-Chirp3-HD-Leda",
       en: "en-US-Chirp3-HD-Leda",
@@ -70,6 +81,8 @@ Sois bref (2 à 5 phrases), chaleureux et fluide.`;
     };
     const selectedVoice = voices[lang] || voices["fr"];
     const languageCode = selectedVoice.split("-").slice(0, 2).join("-");
+
+    console.log("[ASK] 🔊 Envoi au TTS (voix :", selectedVoice + ")...");
 
     const ttsRes = await fetch(
       `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_TTS_KEY}`,
@@ -93,11 +106,11 @@ Sois bref (2 à 5 phrases), chaleureux et fluide.`;
     const ttsData = await ttsRes.json();
 
     if (!ttsRes.ok) {
-      console.error("[ASK] ❌ Erreur TTS :", ttsData);
-      return NextResponse.json({ reply, audio: null, error: "TTS failed" }, { status: 200 });
+      console.error("[ASK] ❌ TTS error :", ttsData);
+      return NextResponse.json({ reply, audio: null, error: "Voice generation failed." }, { status: 200 });
     }
 
-    console.log("[ASK] 🔊 Audio généré avec succès");
+    console.log("[ASK] ✅ TTS terminé. Audio généré.");
 
     return NextResponse.json({
       reply,
@@ -105,7 +118,7 @@ Sois bref (2 à 5 phrases), chaleureux et fluide.`;
     });
 
   } catch (error) {
-    console.error("[ASK] ❌ Erreur serveur :", error);
-    return NextResponse.json({ error: "Erreur serveur", details: error.message }, { status: 500 });
+    console.error("[ASK] ❌ Server error :", error);
+    return NextResponse.json({ error: "Internal server error.", details: error.message }, { status: 500 });
   }
 }
