@@ -190,11 +190,12 @@ const menuLinks = (close) => (
     <Link
       href="/level-test"
       onClick={close}
-      className="block text-white/80 hover:text-white transition"
+      className="block font-semibold bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-transparent bg-clip-text hover:opacity-90 transition"
     >
-      Level Test
+      ✨ Level Test
     </Link>
 
+    {/* Indicator dots 
     <Link
       href="/pro"
       onClick={close}
@@ -202,7 +203,7 @@ const menuLinks = (close) => (
     >
       ✨ Eloquia Pro
     </Link>
-
+    */}
     <Link
       href="/contact"
       onClick={close}

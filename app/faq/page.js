@@ -6,41 +6,42 @@ import { motion, AnimatePresence } from "framer-motion"
 
 const faqs = [
   {
-    question: "How does video transcription work?",
+    question: "What can Eloquia do?",
     answer:
-      "The assistant automatically converts your audio or video files into text, allowing for smooth, fast, and intuitive analysis.",
+      "Eloquia transcribes video or audio files, summarizes the content, answers your questions, evaluates your speaking and writing skills, and determines your CEFR language level through personalized tests.",
+  },
+  {
+    question: "Can I transcribe online videos?",
+    answer:
+      "Yes. Just paste a YouTube or other supported link, and Eloquia will handle the transcription automatically.",
+  },
+  {
+    question: "Can I chat with the AI after transcription?",
+    answer:
+      "Absolutely. Once your transcript is ready, you can ask questions, get summaries, or discuss the content with Eloquia like with a real assistant.",
   },
   {
     question: "Is my data stored?",
     answer:
-      "No. Out of full respect for your privacy, no personal data or transcription is saved. Your files are processed in real time and then deleted.",
+      "No. We do not store any audio, video, or transcription data. Everything is processed temporarily and deleted for your privacy.",
   },
   {
-    question: "Can I talk to the AI after the transcription?",
+    question: "Can Eloquia correct my texts or improve my writing?",
     answer:
-      "Yes. Once the transcription is complete, you can ask questions, request a summary, or continue the conversation like with a real personal assistant.",
+      "Yes. Eloquia provides stylistic improvements, grammar corrections, and clear reformulations while respecting your original intent.",
   },
   {
-    question: "Can it correct mistakes or improve writing style?",
+    question: "What is the CEFR level test?",
     answer:
-      "Absolutely. The AI corrects errors and elegantly rewrites your text while staying true to your original intent.",
+      "The level test evaluates your reading, listening, speaking, and writing based on CEFR standards. You receive individual scores and a final level with detailed AI feedback in your chosen language.",
   },
   {
-    question: "Can I use the assistant with online videos?",
+    question: "Can I export my results?",
     answer:
-      "Yes. You simply paste a link to the video. The system handles the rest automatically.",
-  },
-  {
-    question: "Is there a live version?",
-    answer:
-      "Yes. A special mode allows real-time recording and transcription, with the ability to interact with the AI live.",
-  },
-  {
-    question: "Can I export my transcriptions?",
-    answer:
-      "Of course. You can download your transcription or the AI conversation at any time in plain text format.",
-  },
+      "Yes. You can export your transcriptions or AI discussions in plain text format for further use.",
+  }
 ]
+
 
 export default function FAQPage() {
   const [activeIndex, setActiveIndex] = useState(null)

@@ -139,9 +139,6 @@ export default function Home() {
         {/* TESTIMONIALS */}
         <Testimonials />
 
-        {/* PRICING */}
-        <Pricing />
-
         {/* CTA COMMUNITY SECTION */}
         <Usecases />
 
