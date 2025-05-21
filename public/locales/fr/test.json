@@ -1,0 +1,7 @@
+{
+  "title": "Test de niveau linguistique",
+  "description": "Évalue ton niveau en anglais selon le cadre CECRL.",
+  "selectLanguage": "Langue cible",
+  "selectLevel": "Ton niveau estimé",
+  "start": "Commencer le test"
+}

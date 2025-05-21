@@ -1,0 +1,8 @@
+{
+  "title": "Language Level Test",
+  "description": "Choose your language and CEFR level to begin.",
+  "selectLanguage": "Target Language",
+  "selectLevel": "Your Estimated Level",
+  "start": "Start Test",
+  "loading": "Preparing..."
+}

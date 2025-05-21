@@ -188,12 +188,13 @@ const menuLinks = (close) => (
     </Link>
 
     <Link
-      href="/pricing"
+      href="/level-test"
       onClick={close}
       className="block text-white/80 hover:text-white transition"
     >
-      Pricing
+      Level Test
     </Link>
+
     <Link
       href="/pro"
       onClick={close}
