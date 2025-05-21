@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, BookOpenCheck, Languages } from "lucide-react";
-
+import ProtectedRoute from "@/components/ProtectedRoute"
 import StepReadingAI from "@/components/level-test/StepReadingAI";
 import StepListeningAI from "@/components/level-test/StepListeningAI";
 import StepSpeakingAI from "@/components/level-test/StepSpeakingAI";
@@ -32,6 +32,7 @@ export default function LevelTestPage() {
   };
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white px-4 py-20 flex items-center justify-center">
       {!started ? (
         <div className="w-full max-w-xl bg-white/5 border border-white/10 backdrop-blur-md rounded-3xl shadow-2xl p-10 space-y-8">
@@ -116,5 +117,7 @@ export default function LevelTestPage() {
         <StepFinalScore language={language} onRestart={handleRestart} />
       ) : null}
     </div>
+    </ProtectedRoute>
   );
+  
 }

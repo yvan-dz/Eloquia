@@ -1,44 +1,54 @@
-import { NextResponse } from "next/server";
-import { SpeechClient } from "@google-cloud/speech";
-import { Storage } from "@google-cloud/storage";
+import { NextResponse } from "next/server"
+import { SpeechClient } from "@google-cloud/speech"
+import { Storage } from "@google-cloud/storage"
+import os from "os"
+import fs from "fs"
+import path from "path"
 
-export const runtime = "nodejs";
+export const runtime = "nodejs"
 
-const GOOGLE_KEY_PATH = "/etc/secrets/google-stt.json";
+const TMP_FILE = path.join(os.tmpdir(), "google-stt.json")
 
-const client = new SpeechClient({
-  keyFilename: GOOGLE_KEY_PATH,
-});
+// 🔐 Décode Base64 et écrit le fichier si nécessaire
+function writeServiceKeyIfNeeded() {
+  if (!fs.existsSync(TMP_FILE)) {
+    const base64 = process.env.GOOGLE_SERVICE_KEY_JSON
+    if (!base64) throw new Error("Missing GOOGLE_SERVICE_KEY_JSON")
 
-const storage = new Storage({
-  keyFilename: GOOGLE_KEY_PATH,
-});
+    const decoded = Buffer.from(base64, "base64").toString("utf8")
+    fs.writeFileSync(TMP_FILE, decoded)
+  }
+}
 
-const bucketName = "live01";
+writeServiceKeyIfNeeded()
+
+const client = new SpeechClient({ keyFilename: TMP_FILE })
+const storage = new Storage({ keyFilename: TMP_FILE })
+
+const bucketName = "live01"
 
 const langCodeMap = {
   English: "en-US",
   French: "fr-FR",
   Spanish: "es-ES",
   German: "de-DE",
-};
+}
 
 export async function POST(req) {
-  const { audioBase64, language, level, theme } = await req.json();
+  const { audioBase64, language, level, theme } = await req.json()
 
   if (!audioBase64 || !language || !level || !theme) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    return NextResponse.json({ error: "Missing fields" }, { status: 400 })
   }
 
-  const languageCode = langCodeMap[language] || "en-US";
-  const audioBytes = Buffer.from(audioBase64, "base64");
+  const languageCode = langCodeMap[language] || "en-US"
+  const audioBytes = Buffer.from(audioBase64, "base64")
+  let transcript = ""
 
-  let transcript = "";
-  console.log("🎙️ Lang:", languageCode, "Level:", level, "Theme:", theme);
+  console.log("🎙️ Lang:", languageCode, "Level:", level, "Theme:", theme)
 
-  // 1️⃣ Tentative rapide STT
+  // 1️⃣ Fast STT
   try {
-    console.log("⚡ Attempting fast STT...");
     const [quickRes] = await client.recognize({
       audio: { content: audioBytes.toString("base64") },
       config: {
@@ -47,35 +57,30 @@ export async function POST(req) {
         languageCode,
         enableAutomaticPunctuation: true,
       },
-    });
+    })
 
-    transcript = quickRes.results
-      .map((r) => r.alternatives?.[0]?.transcript)
-      .filter(Boolean)
-      .join(" ")
-      .trim();
+    transcript = quickRes.results.map(r => r.alternatives?.[0]?.transcript).filter(Boolean).join(" ").trim()
 
     if (transcript) {
-      console.log("✅ Fast STT success. Words:", transcript.split(" ").length);
+      console.log("✅ Fast STT success. Words:", transcript.split(" ").length)
     }
   } catch (fastErr) {
-    console.warn("⚠️ Fast STT failed:", fastErr.message);
+    console.warn("⚠️ Fast STT failed:", fastErr.message)
   }
 
-  // 2️⃣ Long STT fallback avec GCS
+  // 2️⃣ Long fallback STT
   if (!transcript || transcript.length < 5) {
     try {
-      console.log("☁️ Upload audio to GCS...");
-      const fileName = `audio-${Date.now()}.webm`;
-      const file = storage.bucket(bucketName).file(fileName);
+      const fileName = `audio-${Date.now()}.webm`
+      const file = storage.bucket(bucketName).file(fileName)
 
       await file.save(audioBytes, {
         metadata: { contentType: "audio/webm" },
         resumable: false,
-      });
+      })
 
-      const gcsUri = `gs://${bucketName}/${fileName}`;
-      console.log("📡 GCS URI ready:", gcsUri);
+      const gcsUri = `gs://${bucketName}/${fileName}`
+      console.log("📡 GCS URI:", gcsUri)
 
       const [operation] = await client.longRunningRecognize({
         audio: { uri: gcsUri },
@@ -86,42 +91,38 @@ export async function POST(req) {
           enableAutomaticPunctuation: true,
           model: "default",
         },
-      });
+      })
 
-      const [response] = await operation.promise();
+      const [response] = await operation.promise()
 
-      transcript = response.results
-        .map((r) => r.alternatives?.[0]?.transcript)
-        .filter(Boolean)
-        .join(" ")
-        .trim();
+      transcript = response.results.map(r => r.alternatives?.[0]?.transcript).filter(Boolean).join(" ").trim()
 
-      console.log("✅ Long STT success. Transcript:", transcript.slice(0, 200));
-
-      await file.delete();
-      console.log("🧹 GCS file deleted.");
-    } catch (longErr) {
-      console.error("❌ Long STT via GCS failed:", longErr.message);
-      return NextResponse.json({ error: "Google STT via GCS failed." }, { status: 500 });
+      await file.delete()
+      console.log("✅ Long STT complete.")
+    } catch (err) {
+      console.error("❌ Long STT error:", err.message)
+      return NextResponse.json({ error: "Google STT via GCS failed." }, { status: 500 })
     }
   }
 
   if (!transcript || transcript.length < 5) {
-    return NextResponse.json({ error: "No clear speech detected." }, { status: 400 });
+    return NextResponse.json({ error: "No clear speech detected." }, { status: 400 })
   }
 
+  // 🧠 Feedback Instruction
   const feedbackInstructionMap = {
     English: "The feedback must be written in English.",
     French: "Le feedback doit être rédigé en français.",
-    Spanish: "El feedback debe estar escrito en español.",
+    Spanish: "El feedback debe estar écrit en español.",
     German: "Das Feedback muss auf Deutsch verfasst sein.",
-  };
+  }
 
-  const feedbackInstruction = feedbackInstructionMap[language] || feedbackInstructionMap["English"];
+  const feedbackInstruction = feedbackInstructionMap[language] || "The feedback must be written in English."
 
+  // 3️⃣ Gemini Evaluation
   const prompt = `
 You are a CEFR speaking examiner.
-Evaluate the test result based on:
+You will evaluate a speaking test response based on:
 
 - Language: ${language}
 - Level: ${level}
@@ -129,7 +130,7 @@ Evaluate the test result based on:
 - Transcript: """${transcript}"""
 
 Assess fluency, pronunciation, vocabulary, structure, and relevance.
-Give a score from 1 to 20. Be strict at advanced levels (C1–C2).
+Give a score between 1 and 20. Be more strict for levels C1 and C2.
 
 ${feedbackInstruction}
 
@@ -139,7 +140,7 @@ Respond only in JSON:
   "feedback": "Your ideas are well structured but some hesitation is present.",
   "transcript": "${transcript}"
 }
-`.trim();
+`.trim()
 
   try {
     const aiRes = await fetch(
@@ -151,17 +152,16 @@ Respond only in JSON:
           contents: [{ role: "user", parts: [{ text: prompt }] }],
         }),
       }
-    );
+    )
 
-    const aiData = await aiRes.json();
-    const raw = aiData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    const clean = raw.replace(/```json|```/g, "").replace(/[“”]/g, '"').trim();
-    const parsed = JSON.parse(clean.slice(clean.indexOf("{")));
+    const aiData = await aiRes.json()
+    const raw = aiData?.candidates?.[0]?.content?.parts?.[0]?.text || ""
+    const clean = raw.replace(/```json|```/g, "").replace(/[“”]/g, '"').trim()
+    const parsed = JSON.parse(clean.slice(clean.indexOf("{")))
 
-    console.log("✅ AI evaluation OK:", parsed.score);
-    return NextResponse.json(parsed);
-  } catch (aiErr) {
-    console.error("❌ AI evaluation failed:", aiErr.message);
-    return NextResponse.json({ error: "AI evaluation failed." }, { status: 500 });
+    return NextResponse.json(parsed)
+  } catch (err) {
+    console.error("❌ AI evaluation failed:", err.message)
+    return NextResponse.json({ error: "AI evaluation failed." }, { status: 500 })
   }
 }
