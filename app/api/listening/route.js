@@ -48,20 +48,32 @@ export async function POST(req) {
     const langCode = langCodes[langKey] || "en-US";
     const { words, questions: nbQuestions } = getParamsForLevel(level);
 
-    const prompt = `
-You are a CEFR language examiner.
+const prompt = `
+You are a CEFR language examiner. your are a woman.
 
 1. Write a spoken monologue in ${language} for level ${level}.
-2. The passage should be natural and appropriate for listening, and about ${words} words long (max 500 words).
-3. Then generate ${nbQuestions} multiple-choice questions (3 options, 1 correct answer).
-4. Return only valid JSON:
+   - The passage should be natural, realistic and adapted for listening skills.
+   - The monologue should be about ${words} words long (maximum 500 words).
+
+2. Then generate exactly ${nbQuestions} multiple-choice comprehension questions.
+   - Each question must include exactly 3 options (A, B, C), written like: "A. Paris", "B. London", "C. New York"
+   - The "correct" field must be the **full matching string** from the options array (not just "A" or "B")
+   - Example: If options are ["A. Cat", "B. Dog", "C. Fish"], then correct = "B. Dog"
+   - Verify that "correct" exactly matches one of the options
+
+3. Return ONLY valid JSON in this exact structure (no markdown, no explanation, no formatting):
+
 {
-  "text": "...",
+  "text": "string",
   "questions": [
-    { "q": "...", "options": ["A", "B", "C"], "correct": "..." }
+    { "q": "string", "options": ["string", "string", "string"], "correct": "string" }
   ]
 }
+
+⚠️ Do not include any intro, comment or formatting outside this JSON block.
+Ensure the JSON is directly parsable and accurate.
 `;
+
 
     // 🌐 Call Gemini API
     const geminiRes = await fetch(

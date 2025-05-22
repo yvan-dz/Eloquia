@@ -19,6 +19,9 @@ export default function StepListeningAI({ language = "English", level = "A1", on
 
     const timerRef = useRef(null);
     const audioRef = useRef(null);
+    const normalize = (str) =>
+        str?.trim().toLowerCase().replace(/\s+/g, "").replace(/[^\wÀ-ÿ]/g, "") || "";
+
 
     // 1. Fetch audio + questions
     useEffect(() => {
@@ -35,7 +38,25 @@ export default function StepListeningAI({ language = "English", level = "A1", on
                     setRaw(data.raw || "");
                 } else {
                     setAudioSrc(`data:audio/mp3;base64,${data.audio}`);
-                    setQuestions(data.questions);
+                    const filtered = data.questions.filter((q, i) => {
+                        const valid = q.options.some(opt => normalize(opt) === normalize(q.correct));
+                        if (!valid) {
+                            console.warn(`⚠️ Q${i + 1} – Réponse correcte absente des options`, {
+                                correct: q.correct,
+                                options: q.options,
+                            });
+                        }
+                        return valid;
+                    });
+
+                    if (filtered.length === 0) {
+                        setError("Aucune question valide n’a été générée. Veuillez réessayer.");
+                        return;
+                    }
+
+                    console.log("🎧 Questions valides reçues :", filtered);
+                    setQuestions(filtered);
+
                     setText(data.text);
                 }
             } catch (e) {
@@ -109,8 +130,17 @@ export default function StepListeningAI({ language = "English", level = "A1", on
     const score = questions.reduce((count, q, i) => {
         const user = answers[i];
         const correct = q.correct;
-        return user?.trim() === correct?.trim() ? count + 1 : count;
+        const isCorrect = normalize(user) === normalize(correct);
+        console.log(`🧠 Q${i + 1}:`, {
+            question: q.q,
+            user,
+            correct,
+            isCorrect,
+            options: q.options,
+        });
+        return isCorrect ? count + 1 : count;
     }, 0);
+
     localStorage.setItem("leveltest-listening", JSON.stringify({ score, total, level }));
 
     if (loading) {
@@ -253,7 +283,15 @@ export default function StepListeningAI({ language = "English", level = "A1", on
                             {questions.map((q, i) => {
                                 const user = answers[i];
                                 const correct = q.correct;
-                                const isCorrect = user?.trim() === correct?.trim();
+                                const isCorrect = normalize(user) === normalize(correct);
+                                console.log(`🧠 Q${i + 1}:`, {
+                                    question: q.q,
+                                    user,
+                                    correct,
+                                    isCorrect,
+                                    options: q.options,
+                                });
+
 
                                 return (
                                     <div
@@ -268,9 +306,9 @@ export default function StepListeningAI({ language = "English", level = "A1", on
                                         <p className="font-semibold text-sm mb-2">Q{i + 1}. {q.q}</p>
                                         <ul className="text-sm space-y-1">
                                             {q.options.map((opt, j) => {
-                                                const isCorrectAnswer = opt.trim() === correct.trim();
-                                                const isUserWrong =
-                                                    opt.trim() === user?.trim() && !isCorrectAnswer;
+                                                const isCorrectAnswer = normalize(opt) === normalize(correct);
+                                                const isUserWrong = normalize(opt) === normalize(user) && !isCorrectAnswer;
+
                                                 return (
                                                     <li
                                                         key={j}

@@ -30,18 +30,26 @@ You are a CEFR language exam generator.
 2. Write a short text adapted to this level:
    - A1–B2: at least 300 words
    - C1/C2: at least 500 words
+
 3. Then generate exactly ${nbQuestions} multiple-choice questions based on the text.
-   - Each question must have exactly 3 options (A, B, C)
-   - Only one correct answer per question
-4. Do NOT add any introduction, explanation or comment.
-5. Return ONLY valid JSON in this exact structure (no markdown, no formatting):
+   - Each question must have exactly 3 answer choices: ["A", "B", "C"]
+   - The "correct" answer must be one of the 3 options
+   - Verify that "correct" === one of the "options" before returning
+   - Do NOT return duplicates or blank values
+
+4. Return ONLY valid JSON in this exact format (no markdown, no explanation, no formatting):
+
 {
-  "text": "...",
+  "text": "string",
   "questions": [
-    { "q": "...", "options": ["A", "B", "C"], "correct": "..." }
+    { "q": "string", "options": ["string", "string", "string"], "correct": "string" }
   ]
 }
+
+Do not include any comments or explanation outside the JSON.
+Ensure JSON is directly parsable and correct.
 `;
+
 
 
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {

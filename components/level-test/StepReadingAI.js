@@ -16,6 +16,9 @@ export default function StepReadingAI({ language = "English", level = "A1", onNe
   const [timeLeft, setTimeLeft] = useState(0);
   const [expired, setExpired] = useState(false);
 
+  const normalize = (str) =>
+    str?.trim().toLowerCase().replace(/\s+/g, "").replace(/[^\wÀ-ÿ]/g, "") || "";
+
   useEffect(() => {
     const fetchAIContent = async () => {
       setLoading(true);
@@ -30,9 +33,10 @@ export default function StepReadingAI({ language = "English", level = "A1", onNe
           setError(data.error);
           setRaw(data.raw || "");
         } else {
+          console.log("📦 Questions reçues depuis Gemini :", data.questions);
           setText(data.text);
           setQuestions(data.questions);
-          const calculatedDuration = (data.questions.length || 5) * 60; // 🧠 1 min / question
+          const calculatedDuration = (data.questions.length || 5) * 60;
           setTimeLeft(calculatedDuration);
         }
       } catch (e) {
@@ -76,14 +80,20 @@ export default function StepReadingAI({ language = "English", level = "A1", onNe
 
   const total = questions.length;
   const score = questions.reduce((count, q, i) => {
-    const userAnswer = answers[i];
+    const user = answers[i];
     const correct = q.correct;
-    return userAnswer && correct && userAnswer.trim() === correct.trim()
-      ? count + 1
-      : count;
+    const isCorrect = normalize(user) === normalize(correct);
+    console.log(`🔍 Q${i + 1}:`, {
+      question: q.q,
+      user,
+      correct,
+      isCorrect,
+      options: q.options,
+    });
+    return isCorrect ? count + 1 : count;
   }, 0);
 
-localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }));
+  localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }));
 
   if (loading) {
     return (
@@ -110,8 +120,6 @@ localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }
   }
 
   const showRecap = expired || answers.length === questions.length;
-
-
 
   return (
     <div className="space-y-6 text-white max-w-2xl mx-auto mt-10 px-4">
@@ -142,25 +150,28 @@ localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }
             {questions.map((q, i) => {
               const user = answers[i];
               const correct = q.correct;
-              const isCorrect = user === correct
+
+              if (!q.options.includes(correct)) {
+                console.warn(`⚠️ Q${i + 1} – Réponse correcte absente des options`, { correct, options: q.options });
+              }
+
+              const isCorrect = normalize(user) === normalize(correct);
 
               return (
                 <div
                   key={i}
                   className={`p-4 rounded-xl border ${user
-                    ? user.trim() === correct.trim()
+                    ? isCorrect
                       ? "border-green-500 bg-green-500/10"
                       : "border-red-500 bg-red-500/10"
                     : "border-yellow-500 bg-yellow-500/10"
                     }`}
                 >
-
                   <p className="font-semibold text-sm mb-2">Q{i + 1}. {q.q}</p>
                   <ul className="text-sm space-y-1">
                     {q.options.map((opt, j) => {
-                      const isCorrectAnswer = opt.trim() === (correct?.trim() || "");
-                      const isUserWrong = opt.trim() === (user?.trim() || "") && opt.trim() !== (correct?.trim() || "");
-
+                      const isCorrectAnswer = normalize(opt) === normalize(correct);
+                      const isUserWrong = normalize(opt) === normalize(user) && !isCorrectAnswer;
                       return (
                         <li
                           key={j}
@@ -178,7 +189,6 @@ localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }
                       );
                     })}
                   </ul>
-
                 </div>
               );
             })}
@@ -212,5 +222,4 @@ localStorage.setItem("leveltest-reading", JSON.stringify({ score, total, level }
       )}
     </div>
   );
-  
 }
