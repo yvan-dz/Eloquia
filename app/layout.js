@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Eloquia – Assistant Vidéo IA",
-  description: "Transcrivez, résumez et discutez avec vos vidéos grâce à Eloquia.",
+  title: "Eloquia – AI Language & Video Assistant",
+  description: "Transcribe videos, chat with AI, and test your language level in speaking, listening, reading and writing.",
 };
 
 export default function RootLayout({ children }) {
