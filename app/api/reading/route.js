@@ -23,7 +23,7 @@ export async function POST(req) {
 
     const nbQuestions = getQuestionCount(level);
 
-    const prompt = `
+const prompt = `
 You are a CEFR language exam generator.
 
 1. Create a reading comprehension exercise in "${language}" at level "${level}".
@@ -31,11 +31,13 @@ You are a CEFR language exam generator.
    - A1–B2: at least 300 words
    - C1/C2: at least 500 words
 
-3. Then generate exactly ${nbQuestions} multiple-choice questions based on the text.
-   - Each question must have exactly 3 answer choices: ["A", "B", "C"]
-   - The "correct" answer must be one of the 3 options
-   - Verify that "correct" === one of the "options" before returning
-   - Do NOT return duplicates or blank values
+3. Then generate exactly ${nbQuestions} multiple-choice questions based on the text:
+   - Each question must have exactly 3 options, written as full sentences prefixed by A., B., and C.
+     Example: "A. Pour faire du sport", "B. Pour se détendre", "C. Aller au cinéma"
+   - The "correct" field must be the **entire matching string** from the options (not just "A", "B" or "C")
+     Example: correct = "B. Pour se détendre"
+   - The "correct" value must match **exactly** one of the strings in "options"
+   - Do not return duplicates or blank values
 
 4. Return ONLY valid JSON in this exact format (no markdown, no explanation, no formatting):
 
@@ -46,8 +48,8 @@ You are a CEFR language exam generator.
   ]
 }
 
-Do not include any comments or explanation outside the JSON.
-Ensure JSON is directly parsable and correct.
+⚠️ Do not include any comments, introductions or formatting outside the JSON.
+The JSON must be directly parsable and clean.
 `;
 
 
