@@ -61,11 +61,12 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-300 text-transparent bg-clip-text"
+          className="flex items-center gap-2 text-2xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-300 text-transparent bg-clip-text animate-gradient-x"
         >
-          <Sparkles className="w-5 h-5 text-pink-300" />
+          <Sparkles className="w-5 h-5 text-pink-300 animate-pulse" />
           Eloquia
         </Link>
+
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -190,10 +191,14 @@ const menuLinks = (close) => (
     <Link
       href="/level-test"
       onClick={close}
-      className="block font-semibold bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-transparent bg-clip-text hover:opacity-90 transition"
+      className="flex items-center gap-2 font-semibold bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-transparent bg-clip-text hover:opacity-90 transition"
     >
       ✨ Level Test
+      <span className="text-xs font-bold text-yellow-300 bg-yellow-500/10 border border-yellow-400 px-2 py-0.5 rounded-full shadow-sm uppercase">
+        BETA
+      </span>
     </Link>
+
 
     {/* Indicator dots 
     <Link
