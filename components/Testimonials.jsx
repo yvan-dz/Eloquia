@@ -4,24 +4,28 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "I save a tremendous amount of time analyzing my interviews with Eloquia. The AI understands everything and rephrases better than my assistants.",
-    name: "Léa R.",
-    role: "Journalist & Podcaster",
+    quote:
+      "I finally found a tool where I can speak in French and get AI replies that sound truly human. It’s like having a multilingual coach.",
+    name: "Alicia V.",
+    role: "Language Learner",
   },
   {
-    quote: "With Eloquia, I turn my Zoom meetings into clear summaries. Ideal for my startup projects.",
-    name: "Karim B.",
-    role: "Digital Product Manager",
+    quote:
+      "Eloquia helped me transcribe a full workshop video in seconds. I could ask AI specific questions about the content — incredible!",
+    name: "Thomas G.",
+    role: "Design Thinking Coach",
   },
   {
-    quote: "I use Eloquia to review my classes and ask the AI questions — it’s become my personal tutor.",
-    name: "Manon T.",
-    role: "Law Student",
+    quote:
+      "The CEFR test felt smooth and smart. I got instant feedback on my speaking and writing. Way better than other platforms I tried.",
+    name: "Lina K.",
+    role: "International Student",
   },
   {
-    quote: "A platform that respects my privacy while boosting my productivity? Eloquia ticks all the boxes.",
-    name: "Nicolas M.",
-    role: "HR Consultant",
+    quote:
+      "I use Eloquia to review business meetings with my German team. The AI chat is super helpful and fast.",
+    name: "Marc S.",
+    role: "Startup Founder",
   },
 ];
 
@@ -55,7 +59,6 @@ export default function Testimonials() {
           <span className="text-white/60">{current.role}</span>
         </p>
 
-        {/* Navigation buttons */}
         <div className="absolute top-1/2 left-0 transform -translate-y-1/2 px-2">
           <button
             onClick={prev}
@@ -75,7 +78,6 @@ export default function Testimonials() {
           </button>
         </div>
 
-        {/* Indicator dots */}
         <div className="flex justify-center gap-2 mt-6">
           {testimonials.map((_, i) => (
             <div

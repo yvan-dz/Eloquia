@@ -6,6 +6,7 @@ import Usecases from "@/components/Usecases"
 import Pricing from "@/components/Pricing"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+
 import {
   Video,
   Sparkles,
@@ -16,7 +17,8 @@ import {
   Shield,
   Globe,
   Square,
-  Send
+  Send,
+  BookOpenCheck
 } from "lucide-react";
 
 
@@ -34,41 +36,44 @@ export default function Home() {
             🔥 Why Choose Eloquia?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* 📄 Transcription & Chat IA */}
-            <Advantage
-              icon={<Video className="w-6 h-6" />}
-              title="AI-Powered Transcription"
-              desc="Upload your audio/video and get fast, multilingual transcripts in seconds."
-            />
-            <Advantage
-              icon={<MessageCircle className="w-6 h-6" />}
-              title="Smart Chat Interface"
-              desc="Ask questions directly about your transcript. Eloquia answers like a human."
-            />
-            <Advantage
-              icon={<Send className="w-6 h-6" />}
-              title="Instant Answers"
-              desc="No lag, no delay. Type your message and receive context-aware replies instantly."
-            />
-
-            {/* 🎙️ Live Chat Vocal Multilingue */}
+            {/* 💬 Multilingual AI Chat */}
             <Advantage
               icon={<Globe className="w-6 h-6" />}
-              title="Multilingual Voice Chat"
-              desc="Speak in English, French, German or Spanish — Eloquia understands and speaks your language."
-            />
-            <Advantage
-              icon={<Square className="w-6 h-6" />}
-              title="Voice Control at Your Fingertips"
-              desc="Pause or mute the AI voice at any time. You decide when to listen and when to think."
+              title="Multilingual AI Chat"
+              desc="Talk to an intelligent assistant in English, French, German or Spanish — naturally and instantly."
             />
             <Advantage
               icon={<Wand2 className="w-6 h-6" />}
-              title="Natural Conversations"
-              desc="Eloquia speaks like a real person — warm, responsive, and fully aware of your previous messages."
+              title="Context-Aware Replies"
+              desc="Eloquia remembers what you said and responds with relevant, human-like answers."
+            />
+
+            {/* 📼 Video Transcription + Q&A */}
+            <Advantage
+              icon={<Video className="w-6 h-6" />}
+              title="Smart Video Transcription"
+              desc="Upload or link a video and get a full transcript. Ask the AI anything about it in seconds."
+            />
+            <Advantage
+              icon={<MessageCircle className="w-6 h-6" />}
+              title="Ask About the Video"
+              desc="After transcription, simply chat with Eloquia to explore or clarify the video content."
+            />
+
+            {/* 🧪 Language Level Test */}
+            <Advantage
+              icon={<Sparkles className="w-6 h-6" />}
+              title="Language Level Test"
+              desc="Take a full CEFR test: reading, listening, speaking and writing — with instant feedback at the end."
+            />
+            <Advantage
+              icon={<BookOpenCheck className="w-6 h-6" />}
+              title="Instant Results"
+              desc="Your level is clearly calculated and stored. Retake the test anytime to track your progress."
             />
           </div>
         </section>
+
 
 
         <section className="relative text-center py-24 px-6 md:px-12">
@@ -80,16 +85,16 @@ export default function Home() {
 
           <div className="space-y-20 z-10 relative max-w-6xl mx-auto">
 
-            {/* 🧾 Transcription & Chat */}
+            {/* 🎧 Transcription + Questions */}
             <div>
               <h3 className="text-xl md:text-2xl font-semibold text-white/90 mb-6 flex items-center justify-center gap-2">
-                <span className="text-white/60">🎧</span> Transcribe and Ask
+                <span className="text-white/60">🎧</span> Transcribe and Explore
               </h3>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  ["Upload your media", "Drop an audio or video file. Eloquia transcribes it in seconds."],
-                  ["Read or Ask", "View the full transcript and ask anything — Eloquia responds instantly."],
-                  ["Export your results", "Download the conversation or transcript as PDF or TXT."]
+                  ["Drop your video", "Upload or paste a link — Eloquia transcribes it in seconds."],
+                  ["Ask anything", "Ask about any part of the transcript. The AI gives you smart, instant answers."],
+                  ["Save your session", "Export the transcript or chat as a file and keep your insights."]
                 ].map(([title, desc], i) => (
                   <div key={i} className="bg-white/5 border border-white/10 backdrop-blur p-6 rounded-xl shadow-md hover:shadow-pink-400/30 transition-all">
                     <p className="text-lg font-semibold mb-2">{`${i + 1}. ${title}`}</p>
@@ -99,18 +104,37 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 🗣️ Live Chat Multilingue */}
+            {/* 🗣️ Multilingual Chat */}
             <div>
               <h3 className="text-xl md:text-2xl font-semibold text-white/90 mb-6 flex items-center justify-center gap-2">
-                <span className="text-white/60">🗣️</span> Speak and Learn
+                <span className="text-white/60">🗣️</span> Chat with AI
               </h3>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  ["Choose your language", "Pick French, English, German or Spanish — Eloquia adapts instantly."],
-                  ["Talk freely", "Use your voice. Eloquia replies naturally in real time."],
-                  ["Practice everyday", "Start new conversations daily and grow your speaking skills."]
+                  ["Select a language", "English, French, German or Spanish — Eloquia understands and replies instantly."],
+                  ["Chat naturally", "Type or speak — the conversation flows like with a real person."],
+                  ["Practice your fluency", "Build confidence by chatting every day with context-aware memory."]
                 ].map(([title, desc], i) => (
                   <div key={i} className="bg-white/5 border border-white/10 backdrop-blur p-6 rounded-xl shadow-md hover:shadow-purple-400/30 transition-all">
+                    <p className="text-lg font-semibold mb-2">{`${i + 1}. ${title}`}</p>
+                    <p className="text-sm text-white/60">{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 🧪 Level Test */}
+            <div>
+              <h3 className="text-xl md:text-2xl font-semibold text-white/90 mb-6 flex items-center justify-center gap-2">
+                <span className="text-white/60">🧪</span> Test Your Language Level
+              </h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  ["Start your CEFR test", "Choose your language and estimated level — Eloquia adapts accordingly."],
+                  ["Complete 4 exercises", "Reading, listening, speaking and writing — all in one interactive flow."],
+                  ["Get instant feedback", "Your score is calculated and shown right away, with a recap of your answers."]
+                ].map(([title, desc], i) => (
+                  <div key={i} className="bg-white/5 border border-white/10 backdrop-blur p-6 rounded-xl shadow-md hover:shadow-yellow-400/30 transition-all">
                     <p className="text-lg font-semibold mb-2">{`${i + 1}. ${title}`}</p>
                     <p className="text-sm text-white/60">{desc}</p>
                   </div>
@@ -128,13 +152,15 @@ export default function Home() {
             🧠 Powerful Features
           </h2>
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
-            <Feature icon={<Video className="w-5 h-5 mr-2" />} text="Audio & video transcription" />
-            <Feature icon={<Sparkles className="w-5 h-5 mr-2" />} text="Smart summaries" />
-            <Feature icon={<MessageCircle className="w-5 h-5 mr-2" />} text="Conversational assistant" />
-            <Feature icon={<Shield className="w-5 h-5 mr-2" />} text="Private data" />
-            <Feature icon={<Settings className="w-5 h-5 mr-2" />} text="TXT & PDF export" />
+            <Feature icon={<Video className="w-5 h-5 mr-2" />} text="Video transcription & Q&A" />
+            <Feature icon={<MessageCircle className="w-5 h-5 mr-2" />} text="Multilingual AI chat" />
+            <Feature icon={<Sparkles className="w-5 h-5 mr-2" />} text="CEFR level test (A1–C2)" />
+            <Feature icon={<Shield className="w-5 h-5 mr-2" />} text="Private & secure usage" />
+            <Feature icon={<Settings className="w-5 h-5 mr-2" />} text="Export chat & transcript" />
+            <Feature icon={<Wand2 className="w-5 h-5 mr-2" />} text="Natural, smart responses" />
           </div>
         </section>
+
 
         {/* TESTIMONIALS */}
         <Testimonials />

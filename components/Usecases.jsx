@@ -3,27 +3,27 @@
 const useCases = [
   {
     title: "🎙️ Content Creators",
-    desc: "Automatically transcribe your YouTube, TikTok or podcast videos. Save time on subtitles, summaries, and scripts.",
+    desc: "Transcribe your videos or podcasts, generate summaries, and ask AI for script ideas or highlights.",
   },
   {
-    title: "📢 Journalists & Interviewers",
-    desc: "Import your interviews, summarize them, extract key moments or query the content directly.",
+    title: "📚 Language Learners",
+    desc: "Take CEFR-level tests and improve your speaking, listening, reading, and writing with AI guidance.",
   },
   {
-    title: "⚖️ Legal & HR",
-    desc: "Securely analyze meetings, legal reports, or confidential audio documents with ease.",
+    title: "🌍 Multilingual Professionals",
+    desc: "Chat with the AI in English, French, German or Spanish to practice fluency or get help across languages.",
+  },
+  {
+    title: "🎥 Journalists & Researchers",
+    desc: "Import interviews or reports, get transcripts and explore them with targeted AI questions.",
   },
   {
     title: "🧑‍🏫 Teachers & Students",
-    desc: "Transcribe lectures, get smart summaries, and guided revisions. Eloquia becomes your study assistant.",
+    desc: "Use Eloquia as your personal study assistant — summarize lectures, practice oral skills, and assess your level.",
   },
   {
-    title: "👩‍💼 Customer Service & CRM",
-    desc: "Record your calls or client meetings and turn them into actionable automated reports.",
-  },
-  {
-    title: "💡 Startups & Product Teams",
-    desc: "Gather voice notes, brainstorming sessions, and user feedback to build your product decisions faster.",
+    title: "💼 Remote Teams & Product Leads",
+    desc: "Capture user calls or internal demos, transcribe them, and extract key insights for faster decisions.",
   },
 ];
 
@@ -36,7 +36,7 @@ export default function Usecases() {
           ✨ Real Use Cases of Eloquia
         </h3>
         <p className="text-white/70 text-lg max-w-2xl mx-auto">
-          Eloquia adapts to all professions. Discover how our AI transforms workflows in your sector.
+          Eloquia adapts to your voice, your goals, and your language. Discover how people use it every day.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 text-left">
